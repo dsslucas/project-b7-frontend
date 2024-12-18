@@ -1,4 +1,3 @@
-import { Divider, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import React from "react"
 import { Link } from "react-router";
 import { colors } from "../../colors";
@@ -15,10 +14,7 @@ const LinkComponent: React.FC<LinkInterface> = (props: LinkInterface) => {
     return <Link
         style={{
             display: "flex",
-            textDecoration: 'none',
-
-            //background: "silver",
-
+            textDecoration: 'none'
         }}
         to={props.pathname}>
 

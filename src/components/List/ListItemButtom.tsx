@@ -1,5 +1,5 @@
 import React from "react"
-import { Divider, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import { Divider, ListItemButton, ListItemText } from "@mui/material";
 
 interface ListItemButtonInterface {
     sx: Object,
