@@ -2,6 +2,7 @@ import { Divider, ListItemButton, ListItemIcon, ListItemText } from "@mui/materi
 import React from "react"
 import { Link } from "react-router";
 import { colors } from "../../colors";
+import ListItemButtomComponent from "../List/ListItemButtom";
 
 interface LinkInterface {
     pathname: string;
@@ -15,33 +16,23 @@ const LinkComponent: React.FC<LinkInterface> = (props: LinkInterface) => {
         style={{
             display: "flex",
             textDecoration: 'none',
-           
+
             //background: "silver",
-            
+
         }}
         to={props.pathname}>
-        <ListItemButton sx={{
-            padding: 0,
-            margin: 0,
-            display: "flex",
-            color: window.location.pathname === props.pathname ? colors.optionsText.active : colors.optionsText.normal,
-        }}>
-            <Divider sx={{
+
+        <ListItemButtomComponent
+            isMenuList
+            sx={{
+                padding: 0,
+                margin: 0,
                 display: "flex",
-                justifyContent: "center",
-                width: "65px"
-            }}>
-                {props.icon}
-            </Divider>
-            <ListItemText
-                inset
-                primary={props.text}
-                sx={{
-                    padding: 0,
-                    maxWidth: "70%"                    
-                }}
-            />
-        </ListItemButton>
+                color: window.location.pathname === props.pathname ? colors.optionsText.active : colors.optionsText.normal
+            }}
+            icon={props.icon}
+            text={props.text}
+        />
     </Link>
 }
 

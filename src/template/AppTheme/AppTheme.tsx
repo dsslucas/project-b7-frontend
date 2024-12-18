@@ -1,7 +1,7 @@
 import React from "react";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { styled } from '@mui/material/styles';
-import { Box, Breadcrumbs, IconButton, Link, Stack, Toolbar, Typography } from "@mui/material";
+import { Box, Breadcrumbs, Divider, IconButton, Link, ListItemButton, ListItemText, Stack, Toolbar, Typography } from "@mui/material";
 import MuiDrawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import LinkComponent from "../../components/Link/LinkComponent"
@@ -13,9 +13,13 @@ import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import { common } from "../../common";
 import { useNavigate } from "react-router";
 import { colors } from "../../colors";
+
+import Button from "../../components/Button/Button"
+import ListItemButtomComponent from "../../components/List/ListItemButtom";
 const menuLength = 240;
 
 interface BreadcrumbPath {
@@ -28,7 +32,7 @@ const SectionContainer = styled("section")(({ theme }) => ({
     background: "#654a25",
     marginLeft: 0,
     [theme.breakpoints.down("sm")]: {
-        
+
     },
     [theme.breakpoints.up("sm")]: {
         marginLeft: "4rem",
@@ -104,6 +108,11 @@ const AppTheme = (props: any) => {
         setOpen(!open);
     };
 
+    const scrollToTop = () => {
+        console.log("cliquei")
+        window.scroll({top: 0, left: 0, behavior: 'smooth' })
+    };
+
     function handleClickBreadcrumb(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, pathname: string) {
         event.preventDefault();
         console.info('You clicked a breadcrumb.');
@@ -114,12 +123,12 @@ const AppTheme = (props: any) => {
         const paths: BreadcrumbPath[] = [
             { label: "Projeto de Gerenciamento", href: "/home" },
             ...window.location.pathname
-              .split("/")
-              .filter((element, index) => index !== 0 && element !== "")
-              .map((element: string) => ({
-                label: common().capitalizeFirstLetter(element),
-                href: `/${element}`,
-              })),
+                .split("/")
+                .filter((element, index) => index !== 0 && element !== "")
+                .map((element: string) => ({
+                    label: common().capitalizeFirstLetter(element),
+                    href: `/${element}`,
+                })),
         ];
 
         console.log(paths)
@@ -206,6 +215,23 @@ const AppTheme = (props: any) => {
                         flexDirection: "column",
                         gap: 1.5
                     }}>
+                        <Button
+                            type="button"
+                            onClick={scrollToTop}
+                            sx={{ background: "transparent", padding: 0, textTransform: 'none' }}
+                        >
+                            <ListItemButtomComponent
+                                isMenuList
+                                sx={{
+                                    padding: 0,
+                                    margin: 0,
+                                    display: "flex",
+                                    color: window.location.pathname === props.pathname ? colors.optionsText.active : colors.optionsText.normal
+                                }}
+                                icon={<KeyboardDoubleArrowUpIcon />}
+                                text={"Voltar ao início"}
+                            />
+                        </Button>
                         <LinkComponent pathname="/user" text="Meus dados" icon={<PersonIcon />} />
                         <LinkComponent pathname="/logout" text="Logout" icon={<LogoutIcon />} />
                     </Box>
