@@ -28,7 +28,7 @@ const SectionContainer = styled("section")(({ theme }) => ({
     background: "#654a25",
     marginLeft: 0,
     [theme.breakpoints.down("sm")]: {
-        background: "red"
+        
     },
     [theme.breakpoints.up("sm")]: {
         marginLeft: "4rem",
@@ -74,6 +74,10 @@ const Header = styled("header")(({ theme }) => ({
     background: colors.headerBackground,
     color: "#fff",
     minHeight: "50px",
+    [theme.breakpoints.down("sm")]: {
+        position: "sticky",
+        top: 0
+    },
 
     [theme.breakpoints.up("sm")]: {
         display: "none"
@@ -251,6 +255,7 @@ const AppTheme = (props: any) => {
                         flexDirection: "column",
                         px: 1.5,
                         background: colors.contextBackground,
+                        paddingTop: 1,
                         minHeight: "1.8rem",
                         maxHeight: "3.50rem",
                     }}
@@ -265,7 +270,8 @@ const AppTheme = (props: any) => {
                         flexDirection: "column",
                         flex: 1,
                         px: 1.5,
-                        background: colors.contextBackground
+                        background: colors.contextBackground,
+                        paddingBottom: 1.5
                     }}
                 >
                     <span>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste asperiores
@@ -273,6 +279,8 @@ const AppTheme = (props: any) => {
                         doloribus enim quae, nemo magni molestiae, magnam odio quod vero.</span>
                     <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempora distinctio repudiandae veritatis necessitatibus recusandae, fuga suscipit dignissimos deserunt vel nisi? In quidem totam maxime cupiditate rerum praesentium harum corrupti minus!</span>
                     <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem quis officiis quaerat quo id, cupiditate consequatur illo modi ducimus est? Accusantium quia magnam reiciendis architecto, impedit eveniet molestias libero veritatis! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Possimus, consequatur! Ut odit ipsa, consectetur molestias aut neque voluptatem cum similique maxime blanditiis odio explicabo consequatur necessitatibus veritatis fuga libero corrupti?</span>
+                    <img src="https://www.toptrucks.nl/images/items/4610/2/scania-r-143-500-m-v8-streamline-manuel-airco-retarder-tt-4641.jpg" alt="scania" />
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSruzGR51aytludNOL8VZEwOPGKAouLlozMyA&s" alt="scania_164" />
                 </Box>
             </SectionContainer>
         </ThemeProvider>
