@@ -10,11 +10,18 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import CategoryIcon from '@mui/icons-material/Category';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { common } from "../../common";
 import { useNavigate } from "react-router";
+import { colors } from "../../colors";
 const menuLength = 240;
+
+interface BreadcrumbPath {
+    label: string;
+    href: string;
+}
 
 const SectionContainer = styled("section")(({ theme }) => ({
     minHeight: "100vh",
@@ -37,10 +44,10 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== "open" 
             position: "fixed",
             whiteSpace: "nowrap",
             width: menuLength,
-            background: "#000c4e",
+            background: colors.headerBackground,
             overflowX: "hidden",
             height: "100%",
-            color: "#fff",
+            color: colors.optionsText.normal,
             transition: theme.transitions.create("width", {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.enteringScreen,
@@ -64,7 +71,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== "open" 
 const Header = styled("header")(({ theme }) => ({
     //zIndex: theme.zIndex.drawer + 1,
     //height: "10%",
-    background: "dodgerblue",
+    background: colors.headerBackground,
     color: "#fff",
     minHeight: "50px",
 
@@ -74,7 +81,18 @@ const Header = styled("header")(({ theme }) => ({
 }));
 
 const AppTheme = (props: any) => {
-    const mdTheme = createTheme();
+    const mdTheme = createTheme({
+        components: {
+            MuiToolbar: {
+                styleOverrides: {
+                    dense: {
+                        height: 55,
+                        minHeight: 55
+                    }
+                }
+            }
+        }
+    });
     const navigate = useNavigate();
 
     const [open, setOpen] = React.useState(false);
@@ -87,42 +105,60 @@ const AppTheme = (props: any) => {
         console.info('You clicked a breadcrumb.');
         navigate(pathname);
     }
-    
+
     const generateBreadcrumb = () => {
-        const paths = window.location.pathname.split("/").filter((element: string) => element !== "");
-        const breadcrumbs: any = [];
-    
-        paths.forEach((element: string, index: number) => {
-            if (index !== paths.length - 1) {
-                breadcrumbs.push(<Link
+        const paths: BreadcrumbPath[] = [
+            { label: "Projeto de Gerenciamento", href: "/home" },
+            ...window.location.pathname
+              .split("/")
+              .filter((element, index) => index !== 0 && element !== "")
+              .map((element: string) => ({
+                label: common().capitalizeFirstLetter(element),
+                href: `/${element}`,
+              })),
+        ];
+
+        console.log(paths)
+
+        const breadcrumbs = paths
+            .slice(0, -1)
+            .map(({ label, href }, index) => (
+                <Link
                     underline="hover"
                     key={index}
                     color="inherit"
-                    href={`/${element}`}
-                    onClick={(e:React.MouseEvent<HTMLAnchorElement, MouseEvent>) => handleClickBreadcrumb (e, `/${element}`)}
+                    href={href}
+                    onClick={(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) =>
+                        handleClickBreadcrumb(e, href)
+                    }
+                    sx={{
+                        display: label === "Projeto de Gerenciamento" ? { xs: "none", sm: "flex" } : "inline",
+                    }}
                 >
-                    {`${common().capitalizeFirstLetter(element)} /`}
-                </Link>)
-            }
-        })
-        console.log(breadcrumbs)
-    
-        const element = <>
-            <Stack spacing={2}>
-                <Breadcrumbs separator="›" aria-label="breadcrumb">
-                    {breadcrumbs}
-                </Breadcrumbs>
-            </Stack>
-            <Typography key={10} variant="h6" sx={{ color: 'text.primary', textAlign: "left" }}>
-                {`${common().capitalizeFirstLetter(paths[paths.length - 1])}`}
-            </Typography>
-        </>
-    
-        return element;
+                    {`${label}`}
+                </Link>
+            ));
+
+        return (
+            <>
+                <Stack spacing={2}>
+                    <Breadcrumbs separator="›" aria-label="breadcrumb">
+                        {breadcrumbs}
+                    </Breadcrumbs>
+                </Stack>
+                <Typography
+                    key={10}
+                    variant="h6"
+                    sx={{ color: "text.primary", textAlign: "left", lineHeight: breadcrumbs.length > 0 ? 1.15 : 1.5 }}
+                >
+                    {paths[paths.length - 1].label}
+                </Typography>
+            </>
+        );
     }
 
     return (
-        <ThemeProvider theme={mdTheme}>
+        <ThemeProvider theme={mdTheme} >
             <Drawer
                 variant="permanent"
                 open={open}
@@ -130,16 +166,15 @@ const AppTheme = (props: any) => {
                 onMouseLeave={() => open && toggleDrawer()}
             >
                 <Toolbar
+                    variant="dense"
                     sx={{
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "flex-end",
                         px: [1],
-                        minHeight: "50px",
-                        backgroundColor: "green"
                     }}
                 >
-                    <IconButton onClick={toggleDrawer} sx={{ color: "red" }}>
+                    <IconButton onClick={toggleDrawer} sx={{ color: colors.optionsText.normal }}>
                         <MenuIcon />
                     </IconButton>
                 </Toolbar>
@@ -156,17 +191,18 @@ const AppTheme = (props: any) => {
                         gap: 1.5,
                         flex: 1
                     }}>
-                        <LinkComponent pathname="/user" text="Lucas Souza" icon={<PersonIcon />} />
-                        <LinkComponent pathname="/users" text="Gestão de usuários" icon={<PeopleAltIcon />} />
-                        <LinkComponent pathname="/products" text="Produtos" icon={<InventoryIcon />} />
-                        <LinkComponent pathname="/products/category" text="Categoria de produtos" icon={<CategoryIcon />} />
-                        <LinkComponent pathname="/config" text="Configurações" icon={<AdminPanelSettingsIcon />} />
+                        <LinkComponent pathname="/home" text="Home" icon={<HomeIcon />} />
+                        <LinkComponent pathname="/usuarios" text="Gestão de usuários" icon={<PeopleAltIcon />} />
+                        <LinkComponent pathname="/produtos" text="Produtos" icon={<InventoryIcon />} />
+                        <LinkComponent pathname="/produtos/categorias" text="Categorias de produtos" icon={<CategoryIcon />} />
+                        <LinkComponent pathname="/ajustes" text="Configurações" icon={<AdminPanelSettingsIcon />} />
                     </Box>
                     <Box sx={{
                         display: "flex",
                         flexDirection: "column",
                         gap: 1.5
                     }}>
+                        <LinkComponent pathname="/user" text="Meus dados" icon={<PersonIcon />} />
                         <LinkComponent pathname="/logout" text="Logout" icon={<LogoutIcon />} />
                     </Box>
                 </List>
@@ -178,7 +214,7 @@ const AppTheme = (props: any) => {
                     <Toolbar
                         sx={{
                             //pr: '24px', // keep right padding when drawer closed
-                            color: "purple",
+                            color: colors.headerText,
                             minHeight: "50px",
                         }}
                     >
@@ -202,7 +238,7 @@ const AppTheme = (props: any) => {
                             noWrap
                             sx={{ display: "flex", flexGrow: 1, justifyContent: "center", textAlign: 'center' }}
                         >
-                            Projeto - Produtos
+                            Projeto de Gerenciamento
                         </Typography>
                         <Box sx={{ width: "25px" }}></Box>
                     </Toolbar>
@@ -213,8 +249,10 @@ const AppTheme = (props: any) => {
                     sx={{
                         display: "flex",
                         flexDirection: "column",
-                        background: "white",
-                        px: 1.5
+                        px: 1.5,
+                        background: colors.contextBackground,
+                        minHeight: "1.8rem",
+                        maxHeight: "3.50rem",
                     }}
                 >
                     {generateBreadcrumb()}
@@ -226,8 +264,8 @@ const AppTheme = (props: any) => {
                         display: "flex",
                         flexDirection: "column",
                         flex: 1,
-                        background: "gray",
-                        px: 1.5
+                        px: 1.5,
+                        background: colors.contextBackground
                     }}
                 >
                     <span>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste asperiores

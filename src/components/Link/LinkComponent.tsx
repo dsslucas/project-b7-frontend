@@ -1,6 +1,7 @@
 import { Divider, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import React from "react"
 import { Link } from "react-router";
+import { colors } from "../../colors";
 
 interface LinkInterface {
     pathname: string;
@@ -23,7 +24,7 @@ const LinkComponent: React.FC<LinkInterface> = (props: LinkInterface) => {
             padding: 0,
             margin: 0,
             display: "flex",
-            color: window.location.pathname === props.pathname ? "red" : "white",
+            color: window.location.pathname === props.pathname ? colors.optionsText.active : colors.optionsText.normal,
         }}>
             <Divider sx={{
                 display: "flex",
@@ -37,27 +38,9 @@ const LinkComponent: React.FC<LinkInterface> = (props: LinkInterface) => {
                 primary={props.text}
                 sx={{
                     padding: 0,
-                    maxWidth: "70%"
+                    maxWidth: "70%"                    
                 }}
             />
-            {/* <Divider sx={{
-                background: "#654a",
-                height: "auto",
-                width: "70%",
-                wordWrap: "wrap",
-                wordBreak: "break-words" // Propriedade adicionada para quebra de linha
-            }}>
-                {props.text}
-            </Divider> */}
-
-            {/* <ListItemText
-                primary=
-                sx={{
-                    background: "#654a",
-                    width: "10px",
-                    //wordBreak: "break-all" // Propriedade adicionada para quebra de linha
-                }}
-            /> */}
         </ListItemButton>
     </Link>
 }
