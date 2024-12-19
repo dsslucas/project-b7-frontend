@@ -111,7 +111,7 @@ const Login = (props: any) => {
     };
 
     return (
-        <LoginTheme {...props}>
+        <>
             <CssBaseline enableColorScheme />
             <SignInContainer direction="column" justifyContent="space-between">
                 {/* <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} /> */}
@@ -183,7 +183,7 @@ const Login = (props: any) => {
                     </Box>
                 </Card>
             </SignInContainer>
-        </LoginTheme>
+        </>
     );
 }
 

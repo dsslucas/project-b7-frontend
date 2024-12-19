@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import type { ThemeOptions } from '@mui/material/styles';
 import { LoginThemeInterface } from './Interface';
+import Login from "../../screens/Login/Login";
 //import { inputsCustomizations } from './customizations/inputs';
 // import { dataDisplayCustomizations } from './customizations/dataDisplay';
 // import { feedbackCustomizations } from './customizations/feedback';
@@ -10,7 +11,7 @@ import { LoginThemeInterface } from './Interface';
 // import { colorSchemes, typography, shadows, shape } from './themePrimitives';
 
 export default function LoginTheme(props: LoginThemeInterface) {
-  const { children, disableCustomTheme, themeComponents } = props;
+  const { disableCustomTheme, themeComponents } = props;
   const theme = React.useMemo(() => {
     return disableCustomTheme
       ? {}
@@ -34,12 +35,10 @@ export default function LoginTheme(props: LoginThemeInterface) {
         //   },
         });
   }, [disableCustomTheme, themeComponents]);
-  if (disableCustomTheme) {
-    return <React.Fragment>{children}</React.Fragment>;
-  }
+  
   return (
     <ThemeProvider theme={theme} disableTransitionOnChange>
-      {children}
+      <Login />
     </ThemeProvider>
   );
 }
