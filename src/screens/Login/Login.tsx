@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -10,6 +10,9 @@ import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import LoginTheme from '../../template/LoginTheme/LoginTheme';
+import InputComponent from "../../components/Input/Input";
+import ButtonComponent from '../../components/Button/Button';
+import TypographyComponent from "../../components/Typography/Typography"
 // import ForgotPassword from './ForgotPassword';
 // import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
 // import ColorModeSelect from '../shared-theme/ColorModeSelect';
@@ -62,6 +65,11 @@ const Login = (props: any) => {
     const [passwordError, setPasswordError] = React.useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
     const [open, setOpen] = React.useState(false);
+
+    const [loginData, setLoginData] = useState({
+        email: "",
+        password: ""
+    });
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -117,13 +125,13 @@ const Login = (props: any) => {
                 {/* <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} /> */}
                 <Card variant="outlined">
                     {/* <SitemarkIcon /> */}
-                    <Typography
+                    <TypographyComponent
                         component="h1"
                         variant="h4"
                         sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
                     >
                         Login
-                    </Typography>
+                    </TypographyComponent>
                     <Box
                         component="form"
                         onSubmit={handleSubmit}
@@ -137,14 +145,14 @@ const Login = (props: any) => {
                     >
                         <FormControl>
                             <FormLabel htmlFor="email">Email</FormLabel>
-                            <TextField
+                            <InputComponent
                                 error={emailError}
                                 helperText={emailErrorMessage}
                                 id="email"
                                 type="email"
                                 name="email"
                                 placeholder="your@email.com"
-                                autoComplete="email"
+                                //autoComplete="email"
                                 autoFocus
                                 required
                                 fullWidth
@@ -155,14 +163,14 @@ const Login = (props: any) => {
                         </FormControl>
                         <FormControl>
                             <FormLabel htmlFor="password">Senha</FormLabel>
-                            <TextField
+                            <InputComponent
                                 error={passwordError}
                                 helperText={passwordErrorMessage}
                                 name="password"
                                 placeholder="••••••"
                                 type="password"
                                 id="password"
-                                autoComplete="current-password"
+                                //autoComplete="current-password"
                                 autoFocus
                                 required
                                 fullWidth
@@ -172,14 +180,14 @@ const Login = (props: any) => {
                             />
                         </FormControl>
                         {/* <ForgotPassword open={open} handleClose={handleClose} /> */}
-                        <Button
-                            type="submit"
+                        <ButtonComponent type="submit"
                             fullWidth
                             variant="contained"
                             onClick={validateInputs}
+                            sx={{}}
                         >
                             Entrar
-                        </Button>
+                        </ButtonComponent>
                     </Box>
                 </Card>
             </SignInContainer>
