@@ -15,46 +15,40 @@ const Router = () => {
     const isAdmin = LoginData.role === "ADMIN";
     console.log(LoginData)
 
+    if (LoginData.token === null) return <Routes>
+        <Route path="/login">
+            <Route index element={<LoginTheme />} />
+        </Route>
+        <Route path="*" element={<Navigate to="/login" replace />} />
+    </Routes>
+
     return (
         <Routes>
-            {LoginData.id === null && (
+            <Route path="/home">
+                <Route path="" element={<AppTheme><Home /></AppTheme>} />
+            </Route>
+
+            <Route path="/usuario">
+                <Route path="" element={<AppTheme><UserScreen /></AppTheme>} />
+            </Route>
+
+            {isAdmin && (
                 <>
-                    <Route path="/login">
-                        <Route index element={<LoginTheme />} />
+                    <Route path="/usuarios">
+                        <Route path="" element={<AppTheme><UsersScreen /></AppTheme>} />
                     </Route>
-                    <Route path="*" element={<Navigate to="/login" replace />} />
+                    <Route path="/permissoes">
+                        <Route index element={<AppTheme><PermissionsScreen /></AppTheme>} />
+                    </Route>
                 </>
             )}
-            {LoginData.id !== null && (
-                <>
-                    <Route path="/home">
-                        <Route path="" element={<AppTheme><Home /></AppTheme>} />
-                    </Route>
 
-                    <Route path="/usuario">
-                        <Route path="" element={<AppTheme><UserScreen /></AppTheme>} />
-                    </Route>
+            <Route path="/produtos">
+                <Route index element={<AppTheme><ProductsScreen /></AppTheme>} />
+                <Route path="categorias" element={<AppTheme><ProductsCategoryScreen /></AppTheme>} />
+            </Route>
 
-                    {isAdmin && (
-                        <Route path="/usuarios">
-                            <Route path="" element={<AppTheme><UsersScreen /></AppTheme>} />
-                        </Route>
-                    )}
-
-                    <Route path="/produtos">
-                        <Route index element={<AppTheme><ProductsScreen /></AppTheme>} />
-                        <Route path="categorias" element={<AppTheme><ProductsCategoryScreen /></AppTheme>} />
-                    </Route>
-
-                    {isAdmin && (
-                        <Route path="/permissoes">
-                            <Route index element={<AppTheme><PermissionsScreen /></AppTheme>} />
-                        </Route>
-                    )}
-
-                    <Route path="*" element={<Navigate to="/home" replace />} />
-                </>
-            )}
+            <Route path="*" element={<Navigate to="/home" replace />} />
         </Routes>
     )
 }
