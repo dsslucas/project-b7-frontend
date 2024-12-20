@@ -78,13 +78,24 @@ const PermissionScreen = () => {
         console.log(configData)
     }, [configData])
 
-    return <BoxComponent sx={{}} component="div">
+    return <BoxComponent sx={{
+        textAlign: "left",
+        width: {
+            xs: "100%",
+            sm: "100%",
+            md: "30%"
+        }
+    }} component="div">
         <BoxComponent sx={{}} component="header">
             <TypographyComponent component="span" variant="body2">
                 Exibição de colunas da tabela para usuários estoquistas
             </TypographyComponent>
         </BoxComponent>
-        <BoxComponent sx={{ display: "flex", flexDirection: "column", gap: 2 }} component="section">
+        <BoxComponent sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2
+        }} component="section">
             {configData && configData.map((element: ConfigInfoInterface) => {
 
                 return <BoxComponent sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }} component="div">
