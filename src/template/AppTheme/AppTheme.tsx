@@ -14,7 +14,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
-import { common } from "../../common/common";
+import { CommonFunctions } from "../../common/common";
 import { useNavigate } from "react-router";
 import { colors } from "../../colors";
 
@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import api from "../../api/api";
 import { ResponseInterface } from "../../Common/interfaces";
 import { LoginData } from "../../redux/actions/LoginData";
+import BoxComponent from "../../components/Box/Box"
 const menuLength = 240;
 
 interface AppThemeInterface {
@@ -115,7 +116,6 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
 
     const loginDataRedux = useSelector((state: any) => state.LoginData);
     const isAdmin = loginDataRedux.role === "ADMIN";
-    console.log(loginDataRedux)
 
     const [open, setOpen] = React.useState(false);
     const toggleDrawer = () => {
@@ -164,7 +164,7 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
                 .split("/")
                 .filter((element, index) => index !== 0 && element !== "")
                 .map((element: string) => ({
-                    label: common().capitalizeFirstLetter(element),
+                    label: CommonFunctions().capitalizeFirstLetter(element),
                     href: `/${element}`,
                 })),
         ];
@@ -249,7 +249,7 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
                         <LinkComponent pathname="/produtos" text="Produtos" icon={<InventoryIcon />} />
                         <LinkComponent pathname="/produtos/categorias" text="Categorias de produtos" icon={<CategoryIcon />} />
                         {isAdmin && (
-                            <LinkComponent pathname="/permissoes" text="Permissões" icon={<AdminPanelSettingsIcon />} />
+                            <LinkComponent pathname="/ajustes" text="Ajustes" icon={<AdminPanelSettingsIcon />} />
                         )}
                     </Box>
                     <Box sx={{
@@ -347,11 +347,12 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
                     {generateBreadcrumb()}
                 </Box>
 
-                <Box
+                <BoxComponent
                     component="article"
                     sx={{
                         display: "flex",
                         flexDirection: "column",
+                        alignItems: "flex-start",
                         flex: 1,
                         px: 1.5,
                         background: colors.contextBackground,
@@ -359,7 +360,7 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
                     }}
                 >
                     {props.children}
-                </Box>
+                </BoxComponent>
             </SectionContainer>
         </ThemeProvider>
     );

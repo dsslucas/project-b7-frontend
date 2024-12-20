@@ -37,7 +37,7 @@ const Router = () => {
                     <Route path="/usuarios">
                         <Route path="" element={<AppTheme><UsersScreen /></AppTheme>} />
                     </Route>
-                    <Route path="/permissoes">
+                    <Route path="/ajustes">
                         <Route index element={<AppTheme><PermissionsScreen /></AppTheme>} />
                     </Route>
                 </>
