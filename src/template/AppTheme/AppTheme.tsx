@@ -14,7 +14,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
-import { common } from "../../common";
+import { common } from "../../common/common";
 import { useNavigate } from "react-router";
 import { colors } from "../../colors";
 

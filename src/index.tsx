@@ -7,6 +7,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import LoginDataReducer from "./redux/reducers/LoginDataReducer"
 
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );

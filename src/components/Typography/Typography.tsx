@@ -1,16 +1,21 @@
 import React from "react";
-import Typography from '@mui/material/Typography';
+import Typography, { TypographyProps } from '@mui/material/Typography';
+import { SxProps } from "@mui/material";
 
-interface TypographyInterface {
-    component: string;
-    variant: string;
-    sx: object;
+interface TypographyInterface extends Omit<TypographyProps, "variant"> {
+    component?: any;
+    variant?: TypographyProps["variant"];
+    sx?: SxProps;
     children: React.ReactNode;
 }
 
 const TypographyComponent: React.FC<TypographyInterface> = (props: TypographyInterface) => {
-    return <Typography>
-
+    return <Typography 
+        component={props.component}
+        variant={props.variant}
+        sx={props.sx}
+    >
+        {props.children}
     </Typography>
 }
 
