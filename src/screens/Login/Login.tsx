@@ -1,18 +1,20 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import LoginTheme from '../../template/LoginTheme/LoginTheme';
-// import ForgotPassword from './ForgotPassword';
-// import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
-// import ColorModeSelect from '../shared-theme/ColorModeSelect';
+import InputComponent from "../../components/Input/Input";
+import ButtonComponent from '../../components/Button/Button';
+import TypographyComponent from "../../components/Typography/Typography"
+import api from "../../api/api";
+import { ResponseInterface } from "../../Common/interfaces"
+import { colors } from '../../colors';
+import LabelComponent from "../../components/Label/Label";
+import { useDispatch } from 'react-redux';
+import { LoginData } from '../../redux/actions/LoginData';
+import { useNavigate } from 'react-router';
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -57,57 +59,49 @@ const SignInContainer = styled(Stack)(({ theme }) => ({
 }));
 
 const Login = (props: any) => {
-    const [emailError, setEmailError] = React.useState(false);
-    const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-    const [passwordError, setPasswordError] = React.useState(false);
-    const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-    const [open, setOpen] = React.useState(false);
+    const [status, setStatus] = React.useState(false);
+    const [statusMessage, setStatusMessage] = React.useState('');
+    const [error, setError] = useState(false);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-    const handleClose = () => {
-        setOpen(false);
-    };
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setStatus(false);
+        setError(false);
+        setStatusMessage("");
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        if (emailError || passwordError) {
-            event.preventDefault();
-            return;
-        }
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
+
+        await api.post<ResponseInterface>("/auth/login", {
+            username: data.get('username'),
             password: data.get('password'),
-        });
-    };
-
-    const validateInputs = () => {
-        const email = document.getElementById('email') as HTMLInputElement;
-        const password = document.getElementById('password') as HTMLInputElement;
-
-        let isValid = true;
-
-        if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-            setEmailError(true);
-            setEmailErrorMessage('Informe um e-mail válido.');
-            isValid = false;
-        } else {
-            setEmailError(false);
-            setEmailErrorMessage('');
-        }
-
-        if (!password.value || password.value.length < 6) {
-            setPasswordError(true);
-            setPasswordErrorMessage('A senha XXXXXXXXX.');
-            isValid = false;
-        } else {
-            setPasswordError(false);
-            setPasswordErrorMessage('');
-        }
-
-        return isValid;
+        })
+            .then((response) => {
+                const responseData = response.data;
+                setStatus(true);
+                setStatusMessage(`Bem vindo, ${responseData.data.name}!`);
+                dispatch(LoginData(responseData.data));
+                navigate("/home");
+            })
+            .catch((error) => {
+                if (error.response) {
+                    setStatus(true);
+                    setError(true);
+                    setStatusMessage(error.response.data.message);
+                } else if (error.request) {
+                    setStatus(true);
+                    setError(true);
+                    setStatusMessage("Erro de requisição. Tente novamente mais tarde.");
+                    console.error("Erro de requisição. Tente novamente mais tarde.");
+                } else {
+                    setStatus(true);
+                    setError(true);
+                    setStatusMessage("Erro de requisição. Tente novamente mais tarde.");
+                    console.error("Erro de requisição. Tente novamente mais tarde.");
+                }
+            });
     };
 
     return (
@@ -117,13 +111,13 @@ const Login = (props: any) => {
                 {/* <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} /> */}
                 <Card variant="outlined">
                     {/* <SitemarkIcon /> */}
-                    <Typography
+                    <TypographyComponent
                         component="h1"
                         variant="h4"
                         sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
                     >
                         Login
-                    </Typography>
+                    </TypographyComponent>
                     <Box
                         component="form"
                         onSubmit={handleSubmit}
@@ -136,50 +130,53 @@ const Login = (props: any) => {
                         }}
                     >
                         <FormControl>
-                            <FormLabel htmlFor="email">Email</FormLabel>
-                            <TextField
-                                error={emailError}
-                                helperText={emailErrorMessage}
-                                id="email"
-                                type="email"
-                                name="email"
-                                placeholder="your@email.com"
-                                autoComplete="email"
+                            <LabelComponent idFor="username" sx={{textAlign: "left"}}>Usuário</LabelComponent>
+                            <InputComponent
+                                id="username"
+                                type="text"
+                                name="username"
                                 autoFocus
                                 required
                                 fullWidth
                                 variant="outlined"
-                                color={emailError ? 'error' : 'primary'}
+                                color={'primary'}
                                 size="small"
                             />
                         </FormControl>
                         <FormControl>
-                            <FormLabel htmlFor="password">Senha</FormLabel>
-                            <TextField
-                                error={passwordError}
-                                helperText={passwordErrorMessage}
+                            <LabelComponent idFor="password" sx={{textAlign: "left"}}>Senha</LabelComponent>
+                            <InputComponent
                                 name="password"
                                 placeholder="••••••"
                                 type="password"
                                 id="password"
-                                autoComplete="current-password"
                                 autoFocus
                                 required
                                 fullWidth
                                 variant="outlined"
-                                color={passwordError ? 'error' : 'primary'}
                                 size="small"
                             />
                         </FormControl>
+
+                        {status && (
+                            <TypographyComponent
+                                component="span"
+                                variant="body2"
+                                sx={{ color: error? colors.text.response.error : colors.text.response.success }}
+                            >
+                               {statusMessage}
+                            </TypographyComponent>
+                        )}
+
                         {/* <ForgotPassword open={open} handleClose={handleClose} /> */}
-                        <Button
-                            type="submit"
+                        <ButtonComponent type="submit"
                             fullWidth
                             variant="contained"
-                            onClick={validateInputs}
+                            onClick={() => null}
+                            sx={{}}
                         >
                             Entrar
-                        </Button>
+                        </ButtonComponent>
                     </Box>
                 </Card>
             </SignInContainer>

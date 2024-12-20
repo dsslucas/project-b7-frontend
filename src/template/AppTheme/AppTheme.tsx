@@ -14,13 +14,18 @@ import HomeIcon from '@mui/icons-material/Home';
 import PersonIcon from '@mui/icons-material/Person';
 import LogoutIcon from '@mui/icons-material/Logout';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
-import { common } from "../../common";
+import { common } from "../../common/common";
 import { useNavigate } from "react-router";
 import { colors } from "../../colors";
 
 import Button from "../../components/Button/Button"
 import ListItemButtomComponent from "../../components/List/ListItemButtom";
+import { useSelector } from "react-redux";
 const menuLength = 240;
+
+interface AppThemeInterface {
+    children: React.ReactNode;
+}
 
 interface BreadcrumbPath {
     label: string;
@@ -88,7 +93,7 @@ const Header = styled("header")(({ theme }) => ({
     },
 }));
 
-const AppTheme = (props: any) => {
+const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
     const mdTheme = createTheme({
         components: {
             MuiToolbar: {
@@ -103,6 +108,10 @@ const AppTheme = (props: any) => {
     });
     const navigate = useNavigate();
 
+    const { LoginData } = useSelector((state: any) => state);
+    const isAdmin = LoginData.role === "ADMIN";
+    console.log(LoginData)
+
     const [open, setOpen] = React.useState(false);
     const toggleDrawer = () => {
         setOpen(!open);
@@ -110,7 +119,7 @@ const AppTheme = (props: any) => {
 
     const scrollToTop = () => {
         console.log("cliquei")
-        window.scroll({top: 0, left: 0, behavior: 'smooth' })
+        window.scroll({ top: 0, left: 0, behavior: 'smooth' })
     };
 
     function handleClickBreadcrumb(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, pathname: string) {
@@ -205,10 +214,14 @@ const AppTheme = (props: any) => {
                         flex: 1
                     }}>
                         <LinkComponent pathname="/home" text="Home" icon={<HomeIcon />} />
-                        <LinkComponent pathname="/usuarios" text="Gestão de usuários" icon={<PeopleAltIcon />} />
+                        {isAdmin && (
+                            <LinkComponent pathname="/usuarios" text="Gestão de usuários" icon={<PeopleAltIcon />} />
+                        )}
                         <LinkComponent pathname="/produtos" text="Produtos" icon={<InventoryIcon />} />
                         <LinkComponent pathname="/produtos/categorias" text="Categorias de produtos" icon={<CategoryIcon />} />
-                        <LinkComponent pathname="/ajustes" text="Configurações" icon={<AdminPanelSettingsIcon />} />
+                        {isAdmin && (
+                            <LinkComponent pathname="/permissoes" text="Permissões" icon={<AdminPanelSettingsIcon />} />
+                        )}                        
                     </Box>
                     <Box sx={{
                         display: "flex",
@@ -226,13 +239,13 @@ const AppTheme = (props: any) => {
                                     padding: 0,
                                     margin: 0,
                                     display: "flex",
-                                    color: window.location.pathname === props.pathname ? colors.optionsText.active : colors.optionsText.normal
+                                    //color: window.location.pathname === props.pathname ? colors.optionsText.active : colors.optionsText.normal
                                 }}
                                 icon={<KeyboardDoubleArrowUpIcon />}
                                 text={"Voltar ao início"}
                             />
                         </Button>
-                        <LinkComponent pathname="/user" text="Meus dados" icon={<PersonIcon />} />
+                        <LinkComponent pathname="/usuario" text="Meus dados" icon={<PersonIcon />} />
                         <LinkComponent pathname="/logout" text="Logout" icon={<LogoutIcon />} />
                     </Box>
                 </List>
@@ -300,13 +313,7 @@ const AppTheme = (props: any) => {
                         paddingBottom: 1.5
                     }}
                 >
-                    <span>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Iste asperiores
-                        totam expedita. Velit labore magni repudiandae dicta. Facere non, aperiam
-                        doloribus enim quae, nemo magni molestiae, magnam odio quod vero.</span>
-                    <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempora distinctio repudiandae veritatis necessitatibus recusandae, fuga suscipit dignissimos deserunt vel nisi? In quidem totam maxime cupiditate rerum praesentium harum corrupti minus!</span>
-                    <span>Lorem ipsum dolor sit amet consectetur adipisicing elit. Autem quis officiis quaerat quo id, cupiditate consequatur illo modi ducimus est? Accusantium quia magnam reiciendis architecto, impedit eveniet molestias libero veritatis! Lorem ipsum, dolor sit amet consectetur adipisicing elit. Possimus, consequatur! Ut odit ipsa, consectetur molestias aut neque voluptatem cum similique maxime blanditiis odio explicabo consequatur necessitatibus veritatis fuga libero corrupti?</span>
-                    <img src="https://www.toptrucks.nl/images/items/4610/2/scania-r-143-500-m-v8-streamline-manuel-airco-retarder-tt-4641.jpg" alt="scania" />
-                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSruzGR51aytludNOL8VZEwOPGKAouLlozMyA&s" alt="scania_164" />
+                    {props.children}
                 </Box>
             </SectionContainer>
         </ThemeProvider>

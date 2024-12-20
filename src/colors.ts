@@ -9,4 +9,11 @@ export const colors = {
         normal: "#80b0fe", // Cor do texto das opções (normal - azul vibrante)
         active: "#e6effe", // Cor do texto das opções (ativo - azul intenso)
     },
+
+    text: {
+        response: {
+            success: "#2ac400",
+            error: "#bc0000",
+        }
+    }
 };
