@@ -20,7 +20,10 @@ import { colors } from "../../colors";
 
 import Button from "../../components/Button/Button"
 import ListItemButtomComponent from "../../components/List/ListItemButtom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import api from "../../api/api";
+import { ResponseInterface } from "../../Common/interfaces";
+import { LoginData } from "../../redux/actions/LoginData";
 const menuLength = 240;
 
 interface AppThemeInterface {
@@ -106,11 +109,13 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
             }
         }
     });
-    const navigate = useNavigate();
 
-    const { LoginData } = useSelector((state: any) => state);
-    const isAdmin = LoginData.role === "ADMIN";
-    console.log(LoginData)
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const loginDataRedux = useSelector((state: any) => state.LoginData);
+    const isAdmin = loginDataRedux.role === "ADMIN";
+    console.log(loginDataRedux)
 
     const [open, setOpen] = React.useState(false);
     const toggleDrawer = () => {
@@ -121,6 +126,30 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
         console.log("cliquei")
         window.scroll({ top: 0, left: 0, behavior: 'smooth' })
     };
+
+    const logoutUser = async () => {
+        console.log(loginDataRedux.token)
+        await api.post<ResponseInterface>("/auth/logout", {}, {
+            headers: { 
+                Authorization: `Bearer ${loginDataRedux.token}` 
+            }
+        })
+            .then((response) => {
+                const responseData = response.data;
+                dispatch(LoginData(responseData.data));
+                window.location.reload();
+            })
+            .catch((error) => {
+                console.error(error)
+                if (error.response) {
+                    console.error(error)
+                } else if (error.request) {
+                    console.error("Erro de requisição. Tente novamente mais tarde.");
+                } else {
+                    console.error("Erro de requisição. Tente novamente mais tarde.");
+                }
+            });
+    }
 
     function handleClickBreadcrumb(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, pathname: string) {
         event.preventDefault();
@@ -221,7 +250,7 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
                         <LinkComponent pathname="/produtos/categorias" text="Categorias de produtos" icon={<CategoryIcon />} />
                         {isAdmin && (
                             <LinkComponent pathname="/permissoes" text="Permissões" icon={<AdminPanelSettingsIcon />} />
-                        )}                        
+                        )}
                     </Box>
                     <Box sx={{
                         display: "flex",
@@ -239,14 +268,30 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
                                     padding: 0,
                                     margin: 0,
                                     display: "flex",
-                                    //color: window.location.pathname === props.pathname ? colors.optionsText.active : colors.optionsText.normal
+                                    color: colors.optionsText.normal
                                 }}
                                 icon={<KeyboardDoubleArrowUpIcon />}
                                 text={"Voltar ao início"}
                             />
                         </Button>
                         <LinkComponent pathname="/usuario" text="Meus dados" icon={<PersonIcon />} />
-                        <LinkComponent pathname="/logout" text="Logout" icon={<LogoutIcon />} />
+                        <Button
+                            type="button"
+                            onClick={logoutUser}
+                            sx={{ background: "transparent", padding: 0, textTransform: 'none' }}
+                        >
+                            <ListItemButtomComponent
+                                isMenuList
+                                sx={{
+                                    padding: 0,
+                                    margin: 0,
+                                    display: "flex",
+                                    color: colors.optionsText.normal
+                                }}
+                                icon={<LogoutIcon />}
+                                text={"Logout"}
+                            />
+                        </Button>
                     </Box>
                 </List>
             </Drawer>
