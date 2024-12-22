@@ -18,9 +18,6 @@ import {
     useMaterialReactTable,
     type MRT_ColumnDef,
     type MRT_Row,
-    MRT_GlobalFilterTextField,
-    MRT_ToggleFiltersButton,
-    createMRTColumnHelper,
     MRT_TableOptions,
 } from 'material-react-table';
 
@@ -30,18 +27,12 @@ import {
     Button,
     Divider,
     IconButton,
-    ListItemIcon,
     Menu,
     MenuItem,
-    Tooltip,
-    Typography,
-    lighten,
+    Tooltip
 } from '@mui/material';
 
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-
-//Icons Imports
-import { AccountCircle, Send } from '@mui/icons-material';
 
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -50,7 +41,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { data, Employee, roles } from './data';
 
 import { mkConfig, generateCsv, download } from 'export-to-csv'; //or use your library of choice here
-import { colors } from '../../colors';
 
 const csvConfig = mkConfig({
     fieldSeparator: ',',
@@ -78,7 +68,6 @@ const Example = () => {
     };
 
     const handleDownload = (rows: MRT_Row<Employee>[] | null, type: DownloadType, category: Category) => {
-        console.log(`Downloading ${category} as ${type}`);
         handleMenuClose();
 
         if (category === "All Data") handleExportData(type);
@@ -152,8 +141,7 @@ const Example = () => {
                 filterFn: 'between',
                 enableEditing: false,
                 size: 20,
-            },
-            {
+            },{
                 accessorKey: 'name',
                 filterVariant: 'autocomplete',
                 header: 'Nome',
@@ -168,34 +156,7 @@ const Example = () => {
                             name: undefined,
                         }),
                 }
-                //custom conditional format and styling
-                // Cell: ({ cell }) => (
-                //   <Box
-                //     component="span"
-                //     sx={(theme) => ({
-                //       backgroundColor:
-                //         cell.getValue<number>() < 50_000
-                //           ? theme.palette.error.dark
-                //           : cell.getValue<number>() >= 50_000 &&
-                //               cell.getValue<number>() < 75_000
-                //             ? theme.palette.warning.dark
-                //             : theme.palette.success.dark,
-                //       borderRadius: '0.25rem',
-                //       color: '#fff',
-                //       maxWidth: '9ch',
-                //       p: '0.25rem',
-                //     })}
-                //   >
-                //     {cell.getValue<number>()?.toLocaleString?.('en-US', {
-                //       style: 'currency',
-                //       currency: 'USD',
-                //       minimumFractionDigits: 0,
-                //       maximumFractionDigits: 0,
-                //     })}
-                //   </Box>
-                // ),
-            },
-            {
+            },{
                 accessorKey: 'email',
                 header: 'E-mail',
                 filterVariant: 'autocomplete',
@@ -210,8 +171,7 @@ const Example = () => {
                             email: undefined,
                         }),
                 }
-            },
-            {
+            },{
                 accessorKey: 'role',
                 header: 'Cargo',
                 editVariant: 'select',
@@ -222,9 +182,8 @@ const Example = () => {
                     error: !!validationErrors?.state,
                     helperText: validationErrors?.state,
                 },
-            },
-            {
-                accessorFn: (row: Employee) => new Date(row.registerDate), //convert to Date for sorting and filtering
+            },{
+                accessorFn: (row: Employee) => new Date(row.registerDate),
                 id: 'dateRegister',
                 header: 'Data de registro',
                 filterVariant: 'date',
@@ -234,12 +193,11 @@ const Example = () => {
                 Cell: ({ cell }) => {
                     const date = cell.getValue<Date>();
                     if (date instanceof Date && !isNaN(date.getTime())) {
-                        // Se for uma data válida, formata para o formato PT-BR
                         return date.toLocaleDateString("pt-BR", { day: '2-digit', month: '2-digit', year: 'numeric' });
                     }
-                    return ''; // Caso a data seja inválida, retorna uma mensagem amigável
+                    return '';
                 },
-                Header: ({ column }) => <em>{column.columnDef.header}</em>, //custom header markup
+                Header: ({ column }) => <em>{column.columnDef.header}</em>,
                 muiFilterTextFieldProps: {
                     sx: {
                         minWidth: '250px',
@@ -249,7 +207,6 @@ const Example = () => {
                     disabled: true,
                 },
             }
-
         ],
         [],
     );
@@ -259,18 +216,9 @@ const Example = () => {
         values,
         table,
     }) => {
-        /*
-        const newValidationErrors = validateUser(values);
-        if (Object.values(newValidationErrors).some((error) => error)) {
-            setValidationErrors(newValidationErrors);
-            return;
-        }
-        setValidationErrors({});
-        await createUser(values);
-        */
         console.log(values)
         alert("enviei")
-        table.setCreatingRow(null); //exit creating mode
+        table.setCreatingRow(null);
     };
 
     //UPDATE action
@@ -278,46 +226,35 @@ const Example = () => {
         values,
         table,
     }) => {
-        /*
-        const newValidationErrors = validateUser(values);
-        if (Object.values(newValidationErrors).some((error) => error)) {
-            setValidationErrors(newValidationErrors);
-            return;
-        }
-        setValidationErrors({});
-        await updateUser(values);
-        */
         console.log(values)
         alert("atualizei")
-        table.setEditingRow(null); //exit editing mode
+        table.setEditingRow(null);
     };
 
     //DELETE action
     const openDeleteConfirmModal = (row: MRT_Row<Employee>) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
-            //deleteUser(row.original.id);
             alert(`user deleted! Id: ${row.original.id}`)
         }
     };
 
     const table = useMaterialReactTable({
         columns,
-        data, //data must be memoized or stable (useState, useMemo, defined outside of this component, etc.)
+        data,
         enableColumnOrdering: true,
-        enableColumnFilterModes: true, // More filters
+        enableColumnFilterModes: true,
         enableGrouping: true,
         enableColumnPinning: true,
         enableFacetedValues: true,
-        enableRowSelection: true, // Enable row selection
+        enableRowSelection: true,
         enableDensityToggle: false,
         enableFullScreenToggle: false,
         localization: MRT_Localization_PT_BR,
-        //columnFilterDisplayMode: 'popover',
         initialState: {
             showColumnFilters: true,
             showGlobalFilter: true,
             columnPinning: {
-                left: ['mrt-row-expand', 'mrt-row-select'], // Pin selection column to the left
+                left: ['mrt-row-expand', 'mrt-row-select'],
                 right: ['mrt-row-actions'],
             },
         },
@@ -334,8 +271,8 @@ const Example = () => {
             variant: 'outlined',
         },
         enableEditing: true,
-        createDisplayMode: 'row', // ('modal', and 'custom' are also available)
-        editDisplayMode: 'row', // ('modal', 'cell', 'table', and 'custom' are also available)
+        createDisplayMode: 'row',
+        editDisplayMode: 'row',
         getRowId: (row) => row.id,
         onCreatingRowCancel: () => setValidationErrors({}),
         onCreatingRowSave: handleCreateUser,
@@ -357,7 +294,7 @@ const Example = () => {
         ),
         muiTableBodyCellProps: ({ column }) =>
             column.id === 'mrt-row-select'
-                ? { sx: { textAlign: 'center', verticalAlign: 'middle', padding: 0 } } // Use sx for Material UI styles
+                ? { sx: { textAlign: 'center', verticalAlign: 'middle', padding: 0 } }
                 : {
                     sx: {
                         padding: 0,
@@ -366,13 +303,13 @@ const Example = () => {
                 },
         muiTableHeadCellProps: ({ column }) =>
             column.id === 'mrt-row-select'
-                ? { sx: { textAlign: 'center', verticalAlign: 'middle', padding: 0 } } // Use sx for Material UI styles
+                ? { sx: { textAlign: 'center', verticalAlign: 'middle', padding: 0 } }
                 : {
                 },
         muiTableBodyRowProps: () => ({
             sx: {
                 '& .MuiCheckbox-root': {
-                    margin: 'auto', // Center the checkbox horizontally and vertically
+                    margin: 'auto',
                 },
                 '& tr:nth-of-type(even) > td': {
                     backgroundColor: '#f5f5f5',
@@ -391,18 +328,11 @@ const Example = () => {
                 <Button
                     variant="contained"
                     onClick={() => {
-                        table.setCreatingRow(true); //simplest way to open the create row modal with no default values
-                        //or you can pass in a row object to set default values with the `createRow` helper function
-                        // table.setCreatingRow(
-                        //   createRow(table, {
-                        //     //optionally pass in default values for the new row, useful for nested data or other complex scenarios
-                        //   }),
-                        // );
+                        table.setCreatingRow(true);
                     }}
                 >
                     Criar
                 </Button>
-
                 <Button
                     variant="outlined"
                     color="primary"
@@ -412,19 +342,15 @@ const Example = () => {
                     Exportar
                 </Button>
                 <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
-                    {/* All Data */}
                     <MenuItem onClick={() => handleDownload(null, 'XLSX', 'All Data')}>Todos os registros (XLSX)</MenuItem>
                     <MenuItem onClick={() => handleDownload(null, 'CSV', 'All Data')}>Todos os registros (CSV)</MenuItem>
                     <Divider />
-                    {/* All Rows */}
                     <MenuItem disabled={table.getPrePaginationRowModel().rows.length === 0} onClick={() => handleDownload(table.getPrePaginationRowModel().rows, 'XLSX', 'All Rows')}>Todas as linhas (XLSX)</MenuItem>
                     <MenuItem disabled={table.getPrePaginationRowModel().rows.length === 0} onClick={() => handleDownload(table.getPrePaginationRowModel().rows, 'CSV', 'All Rows')}>Todas as linhas (CSV)</MenuItem>
                     <Divider />
-                    {/* Page Rows */}
                     <MenuItem disabled={table.getRowModel().rows.length === 0} onClick={() => handleDownload(table.getRowModel().rows, 'XLSX', 'Page Rows')}>Linhas da página (XLSX)</MenuItem>
                     <MenuItem disabled={table.getRowModel().rows.length === 0} onClick={() => handleDownload(table.getRowModel().rows, 'CSV', 'Page Rows')}>Linhas da página (CSV)</MenuItem>
                     <Divider />
-                    {/* Selected Rows */}
                     <MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => handleDownload(table.getSelectedRowModel().rows, 'XLSX', 'Selected Rows')}>Linhas selecionadas (XLSX)</MenuItem>
                     <MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => handleDownload(table.getSelectedRowModel().rows, 'CSV', 'Selected Rows')}>Linhas selecionadas (CSV)</MenuItem>
                 </Menu>
