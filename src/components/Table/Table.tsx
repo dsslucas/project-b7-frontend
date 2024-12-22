@@ -139,8 +139,8 @@ const TableComponent = () => {
                 id: 'id',
                 accessorKey: 'id',
                 header: 'Id',
-                filterFn: 'between',
                 enableEditing: false,
+                filterVariant: "autocomplete",
                 size: 20,
             }, {
                 accessorKey: 'name',
@@ -357,6 +357,23 @@ const TableComponent = () => {
                 </Menu>
             </Box>
         ),
+        muiTopToolbarProps: {
+            sx: {
+                display: "flex",
+                flexDirection: "row",
+                "& > .MuiBox-root": {
+                    flexDirection: {
+                        xs: "column",
+                        sm: "row",
+                    },
+                    alignItems: {
+                        xs: "start",
+                        sm: "center"
+                    },
+                    display: "flex",
+                },
+            },
+        },
         muiTableBodyProps: {
             sx: {
                 '& tr:nth-of-type(even) > td': {
@@ -366,8 +383,8 @@ const TableComponent = () => {
         },
     });
 
-    return <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="br">.
-        <MaterialReactTable table={table} />;
+    return <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="br">
+        <MaterialReactTable table={table} />
     </LocalizationProvider>
 };
 
