@@ -50,8 +50,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { data, Employee, roles } from './data';
 
 import { mkConfig, generateCsv, download } from 'export-to-csv'; //or use your library of choice here
-
-
+import { colors } from '../../colors';
 
 const csvConfig = mkConfig({
     fieldSeparator: ',',
@@ -80,7 +79,6 @@ const Example = () => {
 
     const handleDownload = (rows: MRT_Row<Employee>[] | null, type: DownloadType, category: Category) => {
         console.log(`Downloading ${category} as ${type}`);
-        // Adicione aqui a lógica para o download dos dados conforme o tipo e a categoria
         handleMenuClose();
 
         if (category === "All Data") handleExportData(type);
@@ -92,67 +90,58 @@ const Example = () => {
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
         XLSX.writeFile(workbook, `${fileName}.xlsx`);
-      };
-      
-      const handleExportRows = (rows: MRT_Row<Employee>[], downloadType: DownloadType) => {
+    };
+
+    const handleExportRows = (rows: MRT_Row<Employee>[], downloadType: DownloadType) => {
         if (downloadType === "CSV") {
-          const visibleColumns = table.getVisibleLeafColumns();
-          const visibleColumnIds = visibleColumns
-            .map((col) => col.id as keyof Employee)
-            .filter((columnId: string) => columnId !== "action" && columnId !== "mrt-row-actions" && columnId !== "mrt-row-select");
-      
-          // Filtrar os dados das linhas para incluir apenas as colunas visíveis
-          const filteredData = rows.map((row: any) =>
-            visibleColumnIds.reduce((acc, columnId) => {
-              acc[columnId] = row.original[columnId]; // Garantir que o acesso está alinhado com a tipagem
-              return acc;
-            }, {} as Partial<Employee>) // Usar Partial<Employee> para manter tipagem consistente
-          );
-      
-          // Gerar o CSV apenas com os dados filtrados
-          const csv = generateCsv(csvConfig)(filteredData);
-          download(csvConfig)(csv);
+            const visibleColumns = table.getVisibleLeafColumns();
+            const visibleColumnIds = visibleColumns
+                .map((col) => col.id as keyof Employee)
+                .filter((columnId: string) => columnId !== "action" && columnId !== "mrt-row-actions" && columnId !== "mrt-row-select");
+
+            const filteredData = rows.map((row: any) =>
+                visibleColumnIds.reduce((acc, columnId) => {
+                    acc[columnId] = row.original[columnId];
+                    return acc;
+                }, {} as Partial<Employee>)
+            );
+
+            const csv = generateCsv(csvConfig)(filteredData);
+            download(csvConfig)(csv);
         } else if (downloadType === "XLSX") {
-          const visibleColumns = table.getVisibleLeafColumns();
-          const visibleColumnIds = visibleColumns
-            .map((col) => col.id as keyof Employee)
-            .filter((columnId: string) => columnId !== "action" && columnId !== "mrt-row-actions" && columnId !== "mrt-row-select");
-      
-          // Filtrar os dados das linhas para incluir apenas as colunas visíveis
-          const filteredData = rows.map((row: any) =>
-            visibleColumnIds.reduce((acc, columnId) => {
-              acc[columnId] = row.original[columnId]; // Garantir que o acesso está alinhado com a tipagem
-              return acc;
-            }, {} as Partial<Employee>)
-          );
-      
-          // Gerar o XLSX e fazer o download
-          downloadXlsx(filteredData, "Relatório_Selecionado");
+            const visibleColumns = table.getVisibleLeafColumns();
+            const visibleColumnIds = visibleColumns
+                .map((col) => col.id as keyof Employee)
+                .filter((columnId: string) => columnId !== "action" && columnId !== "mrt-row-actions" && columnId !== "mrt-row-select");
+
+            const filteredData = rows.map((row: any) =>
+                visibleColumnIds.reduce((acc, columnId) => {
+                    acc[columnId] = row.original[columnId];
+                    return acc;
+                }, {} as Partial<Employee>)
+            );
+            downloadXlsx(filteredData, "Relatório_Selecionado");
         }
-      };
-      
-      const handleExportData = (downloadType: DownloadType) => {
+    };
+
+    const handleExportData = (downloadType: DownloadType) => {
         if (downloadType === "CSV") {
-          // Filtrar os dados para ignorar a coluna "action"
-          const filteredData = data.map((row: any) => {
-            const { action, ...rest } = row; // Remove a propriedade "action"
-            return rest;
-          });
-      
-          // Gerar o CSV apenas com os dados filtrados
-          const csv = generateCsv(csvConfig)(filteredData);
-          download(csvConfig)(csv);
+            const filteredData = data.map((row: any) => {
+                const { action, ...rest } = row;
+                return rest;
+            });
+
+            const csv = generateCsv(csvConfig)(filteredData);
+            download(csvConfig)(csv);
         } else if (downloadType === "XLSX") {
-          // Filtrar os dados para ignorar a coluna "action"
-          const filteredData = data.map((row: any) => {
-            const { action, ...rest } = row; // Remove a propriedade "action"
-            return rest;
-          });
-      
-          // Gerar o XLSX e fazer o download
-          downloadXlsx(filteredData, "Relatório_Completo");
+            const filteredData = data.map((row: any) => {
+                const { action, ...rest } = row;
+                return rest;
+            });
+
+            downloadXlsx(filteredData, "Relatório_Completo");
         }
-      };
+    };
 
     const columns = useMemo<MRT_ColumnDef<Employee>[]>(
         () => [
@@ -385,6 +374,9 @@ const Example = () => {
                 '& .MuiCheckbox-root': {
                     margin: 'auto', // Center the checkbox horizontally and vertically
                 },
+                '& tr:nth-of-type(even) > td': {
+                    backgroundColor: '#f5f5f5',
+                },
             },
         }),
         renderTopToolbarCustomActions: ({ table }) => (
@@ -429,8 +421,8 @@ const Example = () => {
                     <MenuItem disabled={table.getPrePaginationRowModel().rows.length === 0} onClick={() => handleDownload(table.getPrePaginationRowModel().rows, 'CSV', 'All Rows')}>Todas as linhas (CSV)</MenuItem>
                     <Divider />
                     {/* Page Rows */}
-                    <MenuItem  disabled={table.getRowModel().rows.length === 0} onClick={() => handleDownload(table.getRowModel().rows, 'XLSX', 'Page Rows')}>Linhas da página (XLSX)</MenuItem>
-                    <MenuItem  disabled={table.getRowModel().rows.length === 0} onClick={() => handleDownload(table.getRowModel().rows, 'CSV', 'Page Rows')}>Linhas da página (CSV)</MenuItem>
+                    <MenuItem disabled={table.getRowModel().rows.length === 0} onClick={() => handleDownload(table.getRowModel().rows, 'XLSX', 'Page Rows')}>Linhas da página (XLSX)</MenuItem>
+                    <MenuItem disabled={table.getRowModel().rows.length === 0} onClick={() => handleDownload(table.getRowModel().rows, 'CSV', 'Page Rows')}>Linhas da página (CSV)</MenuItem>
                     <Divider />
                     {/* Selected Rows */}
                     <MenuItem disabled={!table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()} onClick={() => handleDownload(table.getSelectedRowModel().rows, 'XLSX', 'Selected Rows')}>Linhas selecionadas (XLSX)</MenuItem>
@@ -438,6 +430,13 @@ const Example = () => {
                 </Menu>
             </Box>
         ),
+        muiTableBodyProps: {
+            sx: {
+                '& tr:nth-of-type(even) > td': {
+                    backgroundColor: '#f5f5f5',
+                },
+            },
+        },
     });
 
     return <MaterialReactTable table={table} />;
