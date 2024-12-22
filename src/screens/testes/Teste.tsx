@@ -26,8 +26,10 @@ import {
 import {
     Box,
     Button,
+    Divider,
     IconButton,
     ListItemIcon,
+    Menu,
     MenuItem,
     Tooltip,
     Typography,
@@ -55,40 +57,73 @@ const csvConfig = mkConfig({
     useKeysAsHeaders: true,
 });
 
+type DownloadType = 'XLSX' | 'CSV';
+type Category = 'All Data' | 'All Rows' | 'Page Rows' | 'Selected Rows';
+
 const Example = () => {
     const [validationErrors, setValidationErrors] = useState<
         Record<string, string | undefined>
     >({});
 
-    const handleExportRows = (rows: MRT_Row<Employee>[]) => {
-        const visibleColumns = table.getVisibleLeafColumns();
-        const visibleColumnIds = visibleColumns
-            .map((col) => col.id as keyof Employee)
-            .filter((columnId:string) => columnId !== "action");
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
 
-        // Filtrar os dados das linhas para incluir apenas as colunas visíveis
-        const filteredData = rows.map((row: any) =>
-            visibleColumnIds.reduce((acc, columnId) => {
-                acc[columnId] = row.original[columnId]; // Garantir que o acesso está alinhado com a tipagem
-                return acc;
-            }, {} as Partial<Employee>) // Usar Partial<Employee> para manter tipagem consistente
-        );
-
-        // Gerar o CSV apenas com os dados filtrados
-        const csv = generateCsv(csvConfig)(filteredData);
-        download(csvConfig)(csv);
+    const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
     };
 
-    const handleExportData = () => {
-        // Filtrar os dados para ignorar a coluna "action"
-        const filteredData = data.map((row: any) => {
-            const { action, ...rest } = row; // Remove a propriedade "action"
-            return rest;
-        });
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
 
-        // Gerar o CSV apenas com os dados filtrados
-        const csv = generateCsv(csvConfig)(filteredData);
-        download(csvConfig)(csv);
+    const handleDownload = (rows: MRT_Row<Employee>[] | null, type: DownloadType, category: Category) => {
+        console.log(`Downloading ${category} as ${type}`);
+        // Adicione aqui a lógica para o download dos dados conforme o tipo e a categoria
+        handleMenuClose();
+
+        if (category === "All Data") handleExportData(type);
+        else if (rows !== null) handleExportRows(rows, type);
+    };
+
+    const handleExportRows = (rows: MRT_Row<Employee>[], downloadType: DownloadType) => {
+        if (downloadType === "CSV") {
+            const visibleColumns = table.getVisibleLeafColumns();
+            const visibleColumnIds = visibleColumns
+                .map((col) => col.id as keyof Employee)
+                .filter((columnId: string) => columnId !== "action");
+
+            // Filtrar os dados das linhas para incluir apenas as colunas visíveis
+            const filteredData = rows.map((row: any) =>
+                visibleColumnIds.reduce((acc, columnId) => {
+                    acc[columnId] = row.original[columnId]; // Garantir que o acesso está alinhado com a tipagem
+                    return acc;
+                }, {} as Partial<Employee>) // Usar Partial<Employee> para manter tipagem consistente
+            );
+
+            // Gerar o CSV apenas com os dados filtrados
+            const csv = generateCsv(csvConfig)(filteredData);
+            download(csvConfig)(csv);
+        }
+        else if (downloadType === "XLSX") {
+
+        }
+    };
+
+    const handleExportData = (downloadType: DownloadType) => {
+        if (downloadType === "CSV") {
+            // Filtrar os dados para ignorar a coluna "action"
+            const filteredData = data.map((row: any) => {
+                const { action, ...rest } = row; // Remove a propriedade "action"
+                return rest;
+            });
+
+            // Gerar o CSV apenas com os dados filtrados
+            const csv = generateCsv(csvConfig)(filteredData);
+            download(csvConfig)(csv);
+        }
+        else if (downloadType === "XLSX") {
+
+        }
     };
 
     const columns = useMemo<MRT_ColumnDef<Employee>[]>(
@@ -345,51 +380,40 @@ const Example = () => {
                         // );
                     }}
                 >
-                    Create New User
+                    Criar
                 </Button>
+
                 <Button
-                    //export all data that is currently in the table (ignore pagination, sorting, filtering, etc.)
-                    onClick={handleExportData}
+                    variant="outlined"
+                    color="primary"
                     startIcon={<FileDownloadIcon />}
+                    onClick={handleMenuOpen}
                 >
-                    Export All Data
+                    Exportar
                 </Button>
-                <Button
-                    disabled={table.getPrePaginationRowModel().rows.length === 0}
-                    //export all rows, including from the next page, (still respects filtering and sorting)
-                    onClick={() =>
-                        handleExportRows(table.getPrePaginationRowModel().rows)
-                    }
-                    startIcon={<FileDownloadIcon />}
-                >
-                    Export All Rows
-                </Button>
-                <Button
-                    disabled={table.getRowModel().rows.length === 0}
-                    //export all rows as seen on the screen (respects pagination, sorting, filtering, etc.)
-                    onClick={() => handleExportRows(table.getRowModel().rows)}
-                    startIcon={<FileDownloadIcon />}
-                >
-                    Export Page Rows
-                </Button>
-                <Button
-                    disabled={
-                        !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
-                    }
-                    //only export selected rows
-                    onClick={() => handleExportRows(table.getSelectedRowModel().rows)}
-                    startIcon={<FileDownloadIcon />}
-                >
-                    Export Selected Rows
-                </Button>
+                <Menu anchorEl={anchorEl} open={open} onClose={handleMenuClose}>
+                    {/* All Data */}
+                    <MenuItem onClick={() => handleDownload(null, 'XLSX', 'All Data')}>Todos os registros (XLSX)</MenuItem>
+                    <MenuItem onClick={() => handleDownload(null, 'CSV', 'All Data')}>Todos os registros (CSV)</MenuItem>
+                    <Divider />
+                    {/* All Rows */}
+                    <MenuItem onClick={() => handleDownload(table.getPrePaginationRowModel().rows, 'XLSX', 'All Rows')}>Todas as linhas (XLSX)</MenuItem>
+                    <MenuItem onClick={() => handleDownload(table.getPrePaginationRowModel().rows, 'CSV', 'All Rows')}>Todas as linhas (CSV)</MenuItem>
+                    <Divider />
+                    {/* Page Rows */}
+                    <MenuItem onClick={() => handleDownload(table.getRowModel().rows, 'XLSX', 'Page Rows')}>Linhas da página (XLSX)</MenuItem>
+                    <MenuItem onClick={() => handleDownload(table.getRowModel().rows, 'CSV', 'Page Rows')}>Linhas da página (CSV)</MenuItem>
+                    <Divider />
+                    {/* Selected Rows */}
+                    <MenuItem onClick={() => handleDownload(table.getSelectedRowModel().rows, 'XLSX', 'Selected Rows')}>Linhas selecionadas (XLSX)</MenuItem>
+                    <MenuItem onClick={() => handleDownload(table.getSelectedRowModel().rows, 'CSV', 'Selected Rows')}>Linhas selecionadas (CSV)</MenuItem>
+                </Menu>
             </Box>
         ),
     });
 
     return <MaterialReactTable table={table} />;
 };
-
-
 
 const ExampleWithLocalizationProvider = () => (
     //App.tsx or AppProviders file
