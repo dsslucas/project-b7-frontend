@@ -9,13 +9,13 @@ import Teste2 from "./screens/testes/test2"
 function App() {
   return (
     <main className="App">
-      <h1>TESTE 1</h1>
+      {/* <h1>TESTE 1</h1>
       <Teste />
 
       <br/>
       <h1>TESTE 2</h1>
-      <Teste2 />
-      {/* <Router /> */}
+      <Teste2 /> */}
+      <Router />
         {/* <LoginTheme /> */}
         {/* <AppTheme /> */}
     </main>
