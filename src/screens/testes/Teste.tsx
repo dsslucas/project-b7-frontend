@@ -97,12 +97,13 @@ const Example = () => {
                 id: 'id',
                 accessorKey: 'id',
                 header: 'Id',
+                filterFn: 'between',
                 enableEditing: false,
                 size: 20,
             },
             {
                 accessorKey: 'name',
-                filterFn: 'between',
+                filterVariant: 'autocomplete',
                 header: 'Nome',
                 size: 100,
                 muiEditTextFieldProps: {
@@ -145,6 +146,7 @@ const Example = () => {
             {
                 accessorKey: 'email',
                 header: 'E-mail',
+                filterVariant: 'autocomplete',
                 muiEditTextFieldProps: {
                     type: 'email',
                     required: true,
@@ -161,6 +163,7 @@ const Example = () => {
                 accessorKey: 'role',
                 header: 'Cargo',
                 editVariant: 'select',
+                filterVariant: 'autocomplete',
                 editSelectOptions: roles,
                 muiEditTextFieldProps: {
                     select: true,
