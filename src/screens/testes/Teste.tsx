@@ -10,6 +10,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 import { useMemo } from 'react';
 
+import * as XLSX from "xlsx";
+
 //MRT Imports
 import {
     MaterialReactTable,
@@ -85,46 +87,72 @@ const Example = () => {
         else if (rows !== null) handleExportRows(rows, type);
     };
 
-    const handleExportRows = (rows: MRT_Row<Employee>[], downloadType: DownloadType) => {
+    const downloadXlsx = (data: any[], fileName: string) => {
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
+        XLSX.writeFile(workbook, `${fileName}.xlsx`);
+      };
+      
+      const handleExportRows = (rows: MRT_Row<Employee>[], downloadType: DownloadType) => {
         if (downloadType === "CSV") {
-            const visibleColumns = table.getVisibleLeafColumns();
-            const visibleColumnIds = visibleColumns
-                .map((col) => col.id as keyof Employee)
-                .filter((columnId: string) => columnId !== "action");
-
-            // Filtrar os dados das linhas para incluir apenas as colunas visíveis
-            const filteredData = rows.map((row: any) =>
-                visibleColumnIds.reduce((acc, columnId) => {
-                    acc[columnId] = row.original[columnId]; // Garantir que o acesso está alinhado com a tipagem
-                    return acc;
-                }, {} as Partial<Employee>) // Usar Partial<Employee> para manter tipagem consistente
-            );
-
-            // Gerar o CSV apenas com os dados filtrados
-            const csv = generateCsv(csvConfig)(filteredData);
-            download(csvConfig)(csv);
+          const visibleColumns = table.getVisibleLeafColumns();
+          const visibleColumnIds = visibleColumns
+            .map((col) => col.id as keyof Employee)
+            .filter((columnId: string) => columnId !== "action" && columnId !== "mrt-row-actions" && columnId !== "mrt-row-select");
+      
+          // Filtrar os dados das linhas para incluir apenas as colunas visíveis
+          const filteredData = rows.map((row: any) =>
+            visibleColumnIds.reduce((acc, columnId) => {
+              acc[columnId] = row.original[columnId]; // Garantir que o acesso está alinhado com a tipagem
+              return acc;
+            }, {} as Partial<Employee>) // Usar Partial<Employee> para manter tipagem consistente
+          );
+      
+          // Gerar o CSV apenas com os dados filtrados
+          const csv = generateCsv(csvConfig)(filteredData);
+          download(csvConfig)(csv);
+        } else if (downloadType === "XLSX") {
+          const visibleColumns = table.getVisibleLeafColumns();
+          const visibleColumnIds = visibleColumns
+            .map((col) => col.id as keyof Employee)
+            .filter((columnId: string) => columnId !== "action" && columnId !== "mrt-row-actions" && columnId !== "mrt-row-select");
+      
+          // Filtrar os dados das linhas para incluir apenas as colunas visíveis
+          const filteredData = rows.map((row: any) =>
+            visibleColumnIds.reduce((acc, columnId) => {
+              acc[columnId] = row.original[columnId]; // Garantir que o acesso está alinhado com a tipagem
+              return acc;
+            }, {} as Partial<Employee>)
+          );
+      
+          // Gerar o XLSX e fazer o download
+          downloadXlsx(filteredData, "Relatório_Selecionado");
         }
-        else if (downloadType === "XLSX") {
-
-        }
-    };
-
-    const handleExportData = (downloadType: DownloadType) => {
+      };
+      
+      const handleExportData = (downloadType: DownloadType) => {
         if (downloadType === "CSV") {
-            // Filtrar os dados para ignorar a coluna "action"
-            const filteredData = data.map((row: any) => {
-                const { action, ...rest } = row; // Remove a propriedade "action"
-                return rest;
-            });
-
-            // Gerar o CSV apenas com os dados filtrados
-            const csv = generateCsv(csvConfig)(filteredData);
-            download(csvConfig)(csv);
+          // Filtrar os dados para ignorar a coluna "action"
+          const filteredData = data.map((row: any) => {
+            const { action, ...rest } = row; // Remove a propriedade "action"
+            return rest;
+          });
+      
+          // Gerar o CSV apenas com os dados filtrados
+          const csv = generateCsv(csvConfig)(filteredData);
+          download(csvConfig)(csv);
+        } else if (downloadType === "XLSX") {
+          // Filtrar os dados para ignorar a coluna "action"
+          const filteredData = data.map((row: any) => {
+            const { action, ...rest } = row; // Remove a propriedade "action"
+            return rest;
+          });
+      
+          // Gerar o XLSX e fazer o download
+          downloadXlsx(filteredData, "Relatório_Completo");
         }
-        else if (downloadType === "XLSX") {
-
-        }
-    };
+      };
 
     const columns = useMemo<MRT_ColumnDef<Employee>[]>(
         () => [
@@ -405,8 +433,8 @@ const Example = () => {
                     <MenuItem onClick={() => handleDownload(table.getRowModel().rows, 'CSV', 'Page Rows')}>Linhas da página (CSV)</MenuItem>
                     <Divider />
                     {/* Selected Rows */}
-                    <MenuItem onClick={() => handleDownload(table.getSelectedRowModel().rows, 'XLSX', 'Selected Rows')}>Linhas selecionadas (XLSX)</MenuItem>
-                    <MenuItem onClick={() => handleDownload(table.getSelectedRowModel().rows, 'CSV', 'Selected Rows')}>Linhas selecionadas (CSV)</MenuItem>
+                    <MenuItem disabled={true} onClick={() => handleDownload(table.getSelectedRowModel().rows, 'XLSX', 'Selected Rows')}>Linhas selecionadas (XLSX)</MenuItem>
+                    <MenuItem disabled={true} onClick={() => handleDownload(table.getSelectedRowModel().rows, 'CSV', 'Selected Rows')}>Linhas selecionadas (CSV)</MenuItem>
                 </Menu>
             </Box>
         ),
