@@ -51,5 +51,10 @@ export interface ProductCategoryInterface {
     id: number;
     name: string;
     active: boolean;
-    type: string;
+    type: ProductCategoryTypeInterface;
+}
+
+export interface ProductCategoryTypeInterface {
+    id: number;
+    name: string;
 }
