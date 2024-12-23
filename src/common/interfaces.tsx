@@ -28,3 +28,28 @@ export interface UserInterface {
     registerDate: string;
     active: boolean;
 }
+
+export interface ProductResponse {
+    headers: string[];
+    data: ProductInterface[];
+}
+
+export interface ProductInterface {
+    id: number;
+    name: string;
+    active: boolean;
+    sku: number;
+    icms: number;
+    registerDate: string;
+    amount: number;
+    unitValue: number;
+    totalValue: number;
+    category: any;
+}
+
+export interface ProductCategoryInterface {
+    id: number;
+    name: string;
+    active: boolean;
+    type: string;
+}
