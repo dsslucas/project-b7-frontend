@@ -15,33 +15,39 @@ const PermissionScreen = () => {
         getConfigInfo();
     }, []);
 
-    const getConfigInfo = async () => {
-        console.log("opa joia")
-        await api.get<ResponseInterface>("/config/tables/list", {
-            headers: {
-                Authorization: `Bearer ${LoginData.token}`
-            }
-        }
-        ).then((response) => {
-            const responseData = response.data;
-
-            if (Array.isArray(responseData.data)) {
-                // Se 'data' for um array de ConfigInfoInterface
-                const content: ConfigInfoInterface[] = responseData.data;
-                console.log(content);
-                setConfigData(content);
-            }
-        }).catch((error) => {
-            console.error(error)
-            if (error.response) {
-                console.error(error)
-            } else if (error.request) {
-                console.error("Erro de requisição. Tente novamente mais tarde.");
-            } else {
-                console.error("Erro de requisição. Tente novamente mais tarde.");
-            }
-        });
+    function isConfigInfoArray(data: unknown): data is ConfigInfoInterface[] {
+        return Array.isArray(data) && data.every(item => 'id' in item);
     }
+
+    const getConfigInfo = async () => {
+        await api
+            .get<ResponseInterface>("/config/tables/list", {
+                headers: {
+                    Authorization: `Bearer ${LoginData.token}`,
+                },
+            })
+            .then((response) => {
+                const responseData = response.data;
+    
+                if (isConfigInfoArray(responseData.data)) {
+                    const content: ConfigInfoInterface[] = responseData.data;
+                    console.log(content);
+                    setConfigData(content);
+                } else {
+                    console.error("O tipo de dados recebido não é um array.");
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+                if (error.response) {
+                    console.error("Erro no servidor:", error.response.data);
+                } else if (error.request) {
+                    console.error("Erro de requisição. Tente novamente mais tarde.");
+                } else {
+                    console.error("Erro inesperado:", error.message);
+                }
+            });
+    };
 
     const handleChangeVisibilityColumn = async (e: React.ChangeEvent<HTMLInputElement>, id: number) => {
         const { checked } = e.target;
