@@ -32,6 +32,8 @@ export interface UserInterface {
 export interface ProductResponse {
     headers: string[];
     data: ProductInterface[];
+    isAdmin: boolean;
+    isStockWorker: boolean;
 }
 
 export interface ProductInterface {
