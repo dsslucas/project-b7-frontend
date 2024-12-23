@@ -72,67 +72,67 @@ const TableComponent: React.FC<TableComponentInterface> = (props: TableComponent
     const handleDownload = (rows: MRT_Row<UserInterface | any>[] | null, type: DownloadType, category: Category) => {
         handleMenuClose();
 
-        // if (category === "All Data") handleExportData(type);
-        // else if (rows !== null) handleExportRows(rows, type);
+        if (category === "All Data") handleExportData(type);
+        else if (rows !== null) handleExportRows(rows, type);
     };
 
-    // const downloadXlsx = (data: any[], fileName: string) => {
-    //     const worksheet = XLSX.utils.json_to_sheet(data);
-    //     const workbook = XLSX.utils.book_new();
-    //     XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
-    //     XLSX.writeFile(workbook, `${fileName}.xlsx`);
-    // };
+    const downloadXlsx = (data: any[], fileName: string) => {
+        const worksheet = XLSX.utils.json_to_sheet(data);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
+        XLSX.writeFile(workbook, `${fileName}.xlsx`);
+    };
     
-    // const handleExportRows = (rows: MRT_Row<UserInterface | any>[], downloadType: DownloadType) => {
-    //     if (downloadType === "CSV") {
-    //         const visibleColumns = table.getVisibleLeafColumns();
-    //         const visibleColumnIds = visibleColumns
-    //             .map((col) => col.id as keyof Employee)
-    //             .filter((columnId: string) => columnId !== "action" && columnId !== "mrt-row-actions" && columnId !== "mrt-row-select");
+    const handleExportRows = (rows: MRT_Row<UserInterface | any>[], downloadType: DownloadType) => {
+        if (downloadType === "CSV") {
+            const visibleColumns = table.getVisibleLeafColumns();
+            const visibleColumnIds = visibleColumns
+                .map((col) => col.id as keyof UserInterface | any)
+                .filter((columnId: string) => columnId !== "action" && columnId !== "mrt-row-actions" && columnId !== "mrt-row-select");
 
-    //         const filteredData = rows.map((row: any) =>
-    //             visibleColumnIds.reduce((acc, columnId) => {
-    //                 acc[columnId] = row.original[columnId];
-    //                 return acc;
-    //             }, {} as Partial<Employee>)
-    //         );
+            const filteredData = rows.map((row: any) =>
+                visibleColumnIds.reduce((acc, columnId) => {
+                    acc[columnId] = row.original[columnId];
+                    return acc;
+                }, {} as Partial<UserInterface | any>)
+            );
 
-    //         const csv = generateCsv(csvConfig)(filteredData);
-    //         download(csvConfig)(csv);
-    //     } else if (downloadType === "XLSX") {
-    //         const visibleColumns = table.getVisibleLeafColumns();
-    //         const visibleColumnIds = visibleColumns
-    //             .map((col) => col.id as keyof Employee)
-    //             .filter((columnId: string) => columnId !== "action" && columnId !== "mrt-row-actions" && columnId !== "mrt-row-select");
+            const csv = generateCsv(csvConfig)(filteredData);
+            download(csvConfig)(csv);
+        } else if (downloadType === "XLSX") {
+            const visibleColumns = table.getVisibleLeafColumns();
+            const visibleColumnIds = visibleColumns
+                .map((col) => col.id as keyof UserInterface | any)
+                .filter((columnId: string) => columnId !== "action" && columnId !== "mrt-row-actions" && columnId !== "mrt-row-select");
 
-    //         const filteredData = rows.map((row: any) =>
-    //             visibleColumnIds.reduce((acc, columnId) => {
-    //                 acc[columnId] = row.original[columnId];
-    //                 return acc;
-    //             }, {} as Partial<Employee>)
-    //         );
-    //         downloadXlsx(filteredData, "Relatório_Selecionado");
-    //     }
-    // };
+            const filteredData = rows.map((row: any) =>
+                visibleColumnIds.reduce((acc, columnId) => {
+                    acc[columnId] = row.original[columnId];
+                    return acc;
+                }, {} as Partial<UserInterface | any>)
+            );
+            downloadXlsx(filteredData, "Relatório_Selecionado");
+        }
+    };
 
-    // const handleExportData = (downloadType: DownloadType) => {
-    //     if (downloadType === "CSV") {
-    //         const filteredData = data.map((row: any) => {
-    //             const { action, ...rest } = row;
-    //             return rest;
-    //         });
+    const handleExportData = (downloadType: DownloadType) => {
+        if (downloadType === "CSV") {
+            const filteredData = props.data.map((row: any) => {
+                const { action, ...rest } = row;
+                return rest;
+            });
 
-    //         const csv = generateCsv(csvConfig)(filteredData);
-    //         download(csvConfig)(csv);
-    //     } else if (downloadType === "XLSX") {
-    //         const filteredData = data.map((row: any) => {
-    //             const { action, ...rest } = row;
-    //             return rest;
-    //         });
+            const csv = generateCsv(csvConfig)(filteredData);
+            download(csvConfig)(csv);
+        } else if (downloadType === "XLSX") {
+            const filteredData = props.data.map((row: any) => {
+                const { action, ...rest } = row;
+                return rest;
+            });
 
-    //         downloadXlsx(filteredData, "Relatório_Completo");
-    //     }
-    // };
+            downloadXlsx(filteredData, "Relatório_Completo");
+        }
+    };
     
     //CREATE action
     const handleCreateUser: MRT_TableOptions<UserInterface | any>['onCreatingRowSave'] = async ({
