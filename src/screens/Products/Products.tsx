@@ -113,9 +113,9 @@ const ProductsScreen = () => {
                     size: 20,
                     accessorFn: (row: any) => String(row.sku)
                 }, {
-                    accessorKey: 'name',
+                    accessorKey: 'nameProduct',
                     filterVariant: 'autocomplete',
-                    header: 'Nome',
+                    header: 'Nome Product',
                     size: 100,
                     muiEditTextFieldProps: {
                         required: true,
@@ -140,7 +140,8 @@ const ProductsScreen = () => {
                     muiEditTextFieldProps: {
                         select: true,
                     },
-                }, {
+                }, 
+                {
                     accessorFn: (row: ProductInterface) => String(row.category.name),
                     accessorKey: 'category',
                     header: 'Categoria',
@@ -154,6 +155,17 @@ const ProductsScreen = () => {
                     }),
                     muiEditTextFieldProps: {
                         select: true,
+                    },
+                },
+                {
+                    //accessorFn: (row: ProductInterface) => new Date(row.registerDate),
+                    id: 'nameUser',
+                    accessorKey: 'nameUser',
+                    header: 'Registrado por',
+                    filterVariant: 'autocomplete',
+                    enableEditing: false,
+                    muiEditTextFieldProps: {
+                        disabled: true,
                     },
                 },
                 {
@@ -183,7 +195,8 @@ const ProductsScreen = () => {
                 }
             ];
 
-
+            // RESOLVER:
+            // RENDERIZAÇÃO DE CAMPOS ICMS, QUANTIDADE, VALOR DE CUSTO E VALOR UNITÁRIO
 
 
             return commonData;

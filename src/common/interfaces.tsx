@@ -38,7 +38,8 @@ export interface ProductResponse {
 
 export interface ProductInterface {
     id: number;
-    name: string;
+    nameProduct: string;
+    nameUser: string;
     active: boolean;
     sku: number;
     icms: number;
