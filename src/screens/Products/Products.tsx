@@ -102,21 +102,19 @@ const ProductsScreen = () => {
                     header: 'Id',
                     enableEditing: false,
                     filterVariant: "autocomplete",
-                    size: 20,
-                    accessorFn: (row: any) => String(row.id)
+                    accessorFn: (row: any) => String(row.id),
                 }, {
                     id: 'sku',
                     accessorKey: 'sku',
                     header: 'SKU',
                     enableEditing: false,
                     filterVariant: "autocomplete",
-                    size: 20,
                     accessorFn: (row: any) => String(row.sku)
                 }, {
                     accessorKey: 'nameProduct',
                     filterVariant: 'autocomplete',
                     header: 'Nome Product',
-                    size: 100,
+                    //size: 100,
                     muiEditTextFieldProps: {
                         required: true,
                         // error: !!validationErrors?.name,
@@ -140,7 +138,7 @@ const ProductsScreen = () => {
                     muiEditTextFieldProps: {
                         select: true,
                     },
-                }, 
+                },
                 {
                     accessorFn: (row: ProductInterface) => String(row.category.name),
                     accessorKey: 'category',
@@ -156,18 +154,61 @@ const ProductsScreen = () => {
                     muiEditTextFieldProps: {
                         select: true,
                     },
+                },                
+            ];
+
+            if (headers.some((element: String) => "ICMS")) {
+                commonData.push({
+                    accessorFn: (row: ProductInterface) => String(row.icms),
+                    id: 'icms',
+                    header: 'ICMS',
+                    filterFn: 'lessThan'
+                })
+            }
+
+            if (headers.some((element: String) => "Quantidade")) {
+                commonData.push({
+                    accessorFn: (row: ProductInterface) => String(row.amount),
+                    id: 'amount',
+                    header: 'Quantidade',
+                    filterFn: 'lessThan'
+                })
+            }
+
+            if (headers.some((element: String) => "Valor de custo")) {
+                commonData.push({
+                    accessorFn: (row: ProductInterface) => String(row.unitValue),
+                    id: 'unitValue',
+                    header: 'Valor de custo',
+                    filterFn: 'lessThan'
+                })
+            }
+
+            if (headers.some((element: String) => "Valor da venda")) {
+                commonData.push({
+                    accessorFn: (row: ProductInterface) => String(row.totalValue),
+                    id: 'totalValue',
+                    header: 'Valor da venda',
+                    filterFn: 'lessThan'
+                })
+            }
+
+            // RESOLVER:
+            // RENDERIZAÇÃO DE CAMPOS ICMS, QUANTIDADE, VALOR DE CUSTO E VALOR UNITÁRIO
+            console.log(headers)
+
+            commonData.push({
+                //accessorFn: (row: ProductInterface) => new Date(row.registerDate),
+                id: 'nameUser',
+                accessorKey: 'nameUser',
+                header: 'Registrado por',
+                filterVariant: 'autocomplete',
+                enableEditing: false,
+                muiEditTextFieldProps: {
+                    disabled: true,
                 },
-                {
-                    //accessorFn: (row: ProductInterface) => new Date(row.registerDate),
-                    id: 'nameUser',
-                    accessorKey: 'nameUser',
-                    header: 'Registrado por',
-                    filterVariant: 'autocomplete',
-                    enableEditing: false,
-                    muiEditTextFieldProps: {
-                        disabled: true,
-                    },
-                },
+            });
+            commonData.push(
                 {
                     accessorFn: (row: ProductInterface) => new Date(row.registerDate),
                     id: 'dateRegister',
@@ -192,12 +233,7 @@ const ProductsScreen = () => {
                     muiEditTextFieldProps: {
                         disabled: true,
                     },
-                }
-            ];
-
-            // RESOLVER:
-            // RENDERIZAÇÃO DE CAMPOS ICMS, QUANTIDADE, VALOR DE CUSTO E VALOR UNITÁRIO
-
+                })
 
             return commonData;
         },
