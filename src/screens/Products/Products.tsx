@@ -184,8 +184,12 @@ const ProductsScreen = () => {
                                 table.setCreatingRow(row);
                             }
                             else {
+                                row._valuesCache = {
+                                    ...row._valuesCache,
+                                    icms: numericValue
+                                }
                                 table.setEditingRow(row);
-                                table.options.data[row.index] = { ...row.original, icms: numericValue };
+                                // table.options.data[row.index] = { ...row.original, icms: numericValue };
                             }
                         };
 
@@ -234,8 +238,12 @@ const ProductsScreen = () => {
                                 table.setCreatingRow(row);
                             }
                             else {
+                                row._valuesCache = {
+                                    ...row._valuesCache,
+                                    amount: numericValue
+                                }
                                 table.setEditingRow(row);
-                                table.options.data[row.index] = { ...row.original, amount: numericValue };
+                                // table.options.data[row.index] = { ...row.original, amount: numericValue };
                             }
                         };
 
@@ -287,8 +295,15 @@ const ProductsScreen = () => {
                                 table.setCreatingRow(row);
                             }
                             else {
+                                row._valuesCache = {
+                                    ...row._valuesCache,
+                                    unitValue: numericValue
+                                }
+                                table.setEditingRow(row);
+                                /*
                                 table.setEditingRow(row);
                                 table.options.data[row.index] = { ...row.original, unitValue: numericValue };
+                                */
                             }
                         };
 
@@ -382,7 +397,7 @@ const ProductsScreen = () => {
             unitValue: Number(data.unitValue),
             icms: Number(data.icms),
             category: {
-                id: 2
+                id: data.category
             }
         }, {
             headers: {
@@ -410,7 +425,16 @@ const ProductsScreen = () => {
     const handleUpdateProduct = async (data: ProductInterface) => {
         console.log(data)
         console.log(LoginData.token)
-        await api.put(`/product/${data.id}`, data, {
+        await api.put(`/product/${data.id}`, {
+            name: data.nameProduct,
+            sku: Number(data.sku),
+            amount: Number(data.amount),
+            unitValue: Number(data.unitValue),
+            icms: Number(data.icms),
+            category: {
+                id: data.category
+            }
+        }, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
             }

@@ -47,7 +47,7 @@ export interface ProductInterface {
     amount: number;
     unitValue: number;
     totalValue: number;
-    category: any;
+    category: ProductCategoryInterface;
 }
 
 export interface ProductCategoryInterface {

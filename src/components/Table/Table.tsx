@@ -151,7 +151,9 @@ const TableComponent: React.FC<TableComponentInterface> = (props: TableComponent
         table,
         row,
     }) => {
-        props.update(table.options.data[row.index]);
+        console.log(values)
+        //props.update(table.options.data[row.index]);
+        props.update(values)
         table.setEditingRow(null);
     };    
 
