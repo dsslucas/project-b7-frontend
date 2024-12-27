@@ -107,7 +107,10 @@ const ProductsScreen = () => {
                     id: 'sku',
                     accessorKey: 'sku',
                     header: 'SKU',
-                    enableEditing: false,
+                    enableEditing: (row) => {
+                        // Verifica se o valor de 'sku' é vazio ou nulo
+                        return String(row?.getValue('sku') ?? "") === "";
+                    },
                     filterVariant: "autocomplete",
                     accessorFn: (row: any) => String(row.sku)
                 }, {
@@ -372,7 +375,16 @@ const ProductsScreen = () => {
     const handleCreateProduct = async (data: ProductInterface) => {
         console.log(data)
         console.log(LoginData.token)
-        await api.post("product/create", data, {
+        await api.post("/product/create", {
+            name: data.nameProduct,
+            sku: Number(data.sku),
+            amount: Number(data.amount),
+            unitValue: Number(data.unitValue),
+            icms: Number(data.icms),
+            category: {
+                id: 2
+            }
+        }, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
             }
