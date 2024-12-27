@@ -8,7 +8,7 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import 'moment/locale/de';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
-import {TableComponentInterface} from "./Interface";
+import { TableComponentInterface } from "./Interface";
 
 import * as XLSX from "xlsx";
 
@@ -43,6 +43,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 import { mkConfig, generateCsv, download } from 'export-to-csv'; //or use your library of choice here
 import { UserInterface } from '../../Common/interfaces';
+import { CommonFunctions } from '../../common/common';
 
 const csvConfig = mkConfig({
     fieldSeparator: ',',
@@ -82,7 +83,7 @@ const TableComponent: React.FC<TableComponentInterface> = (props: TableComponent
         XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
         XLSX.writeFile(workbook, `${fileName}.xlsx`);
     };
-    
+
     const handleExportRows = (rows: MRT_Row<UserInterface | any>[], downloadType: DownloadType) => {
         if (downloadType === "CSV") {
             const visibleColumns = table.getVisibleLeafColumns();
@@ -133,30 +134,34 @@ const TableComponent: React.FC<TableComponentInterface> = (props: TableComponent
             downloadXlsx(filteredData, "Relatório_Completo");
         }
     };
-    
+
     //CREATE action
     const handleCreateUser: MRT_TableOptions<UserInterface | any>['onCreatingRowSave'] = async ({
         values,
         table,
+        row
     }) => {
-        props.create(values);
-        table.setCreatingRow(null);
+        console.log(values)
+        console.log(row)
+        console.log(table.options)
+        console.log(table.options.data[row.index])
+        //props.create(table.options.data[row.index]);
+        //table.setCreatingRow(null);
     };
 
     //UPDATE action
     const handleSaveUser: MRT_TableOptions<UserInterface | any>['onEditingRowSave'] = async ({
         values,
         table,
+        row,
     }) => {
-        props.update(values);
-        console.log(values)
-        alert("atualizei")
+        props.update(table.options.data[row.index]);
         table.setEditingRow(null);
-    };
+    };    
 
     //DELETE action
     const openDeleteConfirmModal = (row: MRT_Row<UserInterface | any>) => {
-        if(row.original.id){
+        if (row.original.id) {
             props.delete(row.original.id);
         }
     };
@@ -194,6 +199,15 @@ const TableComponent: React.FC<TableComponentInterface> = (props: TableComponent
             variant: 'outlined',
         },
         enableEditing: true,
+        // muiEditTextFieldProps: ({ cell }) => ({
+        //     onChange: (event) => {
+        //         console.info(event, cell.id);
+        //         console.log(cell.column.id)
+        //         console.log("BEFORE: ", event.target.value)
+        //         console.log("AFTER: ", CommonFunctions().transformMaskNumber(event.target.value))
+
+        //     },            
+        // }),
         createDisplayMode: 'row',
         editDisplayMode: 'row',
         getRowId: (row) => row.id,

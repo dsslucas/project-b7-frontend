@@ -6,6 +6,10 @@ import api from "../../api/api";
 import { ProductCategoryInterface, ProductInterface, ProductResponse, ResponseInterface } from "../../Common/interfaces";
 import { useSelector } from "react-redux";
 import { MRT_ColumnDef } from "material-react-table";
+import { TextField } from "@mui/material";
+import InputComponent from "../../components/Input/Input";
+
+import { IMaskInput } from "react-imask";
 
 const ProductsScreen = () => {
     const { LoginData } = useSelector((state: any) => state);
@@ -91,8 +95,6 @@ const ProductsScreen = () => {
             });
     }
 
-
-
     const tableColumns = useMemo<MRT_ColumnDef<ProductInterface | any>[]>(
         () => {
             var commonData: MRT_ColumnDef<ProductInterface>[] = [
@@ -154,42 +156,162 @@ const ProductsScreen = () => {
                     muiEditTextFieldProps: {
                         select: true,
                     },
-                },                
+                },
             ];
 
             if (headers.some((element: String) => "ICMS")) {
                 commonData.push({
-                    accessorFn: (row: ProductInterface) => String(row.icms),
+                    accessorFn: (row: ProductInterface) => String(row.icms.toLocaleString("pt-br")),
                     id: 'icms',
                     header: 'ICMS',
-                    filterFn: 'lessThan'
+                    filterFn: 'lessThan',
+                    Edit: ({ cell, column, row, table }) => {
+                        const [icms, setIcms] = useState<string>(
+                            row.original.icms.toLocaleString("pt-br") // Inicialize com o valor formatado
+                        );
+                
+                        const handleValueChange = (value: string) => {
+                            const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.')); // Converte para número
+                            setIcms(value); // Atualize o estado local
+                            // row.original.icms = numericValue; // Atualize diretamente a linha original
+                            // table.options.data[row.index].icms = numericValue; // Atualize os dados na tabela
+                            table.setEditingRow(row)
+
+                            console.log("ANTES: ", table.options.data[row.index])
+
+                            table.options.data[row.index] = { ...row.original, icms: numericValue};
+
+                            console.log("DEPOIS: ", table.options.data[row.index])
+                        };
+                
+                        return (
+                            <InputComponent
+                                id={`icms-${row.id}`} // ID único baseado no `row.id`
+                                name="icms"
+                                type="text"
+                                placeholder="Digite o valor"
+                                fullWidth
+                                variant="standard"
+                                mask="num"
+                                maskOptions={{
+                                    mask: Number,
+                                    thousandsSeparator: ".",
+                                    radix: ",",
+                                    scale: 2,
+                                }}
+                                value={icms}
+                                onChange={(e) => handleValueChange(e.target.value)}
+                            />
+                        );
+                    },
                 })
             }
 
             if (headers.some((element: String) => "Quantidade")) {
                 commonData.push({
-                    accessorFn: (row: ProductInterface) => String(row.amount),
+                    accessorFn: (row: ProductInterface) => row.amount.toLocaleString("pt-br"),
                     id: 'amount',
                     header: 'Quantidade',
-                    filterFn: 'lessThan'
-                })
+                    filterFn: 'lessThan',
+                    Edit: ({ cell, column, row, table }) => {
+                        const [amount, setAmount] = useState<string>(
+                            row.original.amount.toLocaleString("pt-br") // Inicialize com o valor formatado
+                        );
+                
+                        const handleValueChange = (value: string) => {
+                            const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.')); // Converte para número
+                            setAmount(value); // Atualize o estado local
+                            // row.original.amount = numericValue; // Atualize diretamente a linha original
+                            // table.options.data[row.index].amount = numericValue; // Atualize os dados na tabela
+                            table.setCreatingRow(row);
+                            table.setEditingRow(row);
+
+                            console.log("ANTES: ", table.options.data[row.index])
+
+                            table.options.data[row.index] = { ...row.original, amount: numericValue};
+
+                            console.log("DEPOIS: ", table.options.data[row.index])
+                        };
+                
+                        return (
+                            <InputComponent
+                                id={`amount-${row.id}`} // ID único baseado no `row.id`
+                                name="amount"
+                                type="text"
+                                placeholder="Digite o valor"
+                                fullWidth
+                                variant="standard"
+                                mask="num"
+                                maskOptions={{
+                                    mask: Number,
+                                    thousandsSeparator: ".",
+                                    radix: ",",
+                                    scale: 2,
+                                }}
+                                value={amount}
+                                onChange={(e) => handleValueChange(e.target.value)}
+                            />
+                        );
+                    },
+                });
+                
             }
 
             if (headers.some((element: String) => "Valor de custo")) {
                 commonData.push({
-                    accessorFn: (row: ProductInterface) => String(row.unitValue),
+                    accessorFn: (row: ProductInterface) => String(row.unitValue.toLocaleString("pt-br")),
                     id: 'unitValue',
                     header: 'Valor de custo',
-                    filterFn: 'lessThan'
+                    filterFn: 'lessThan',
+                    Edit: ({ cell, column, row, table }) => {
+                        const [unitValue, setUnitValue] = useState<string>(
+                            row.original.unitValue.toLocaleString("pt-br") // Inicialize com o valor formatado
+                        );
+                
+                        const handleValueChange = (value: string) => {
+                            const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.')); // Converte para número
+                            setUnitValue(value); // Atualize o estado local
+                            // row.original.unitValue = numericValue; // Atualize diretamente a linha original
+                            // table.options.data[row.index].unitValue = numericValue; // Atualize os dados na tabela
+                            table.setEditingRow(row)
+
+                            console.log("ANTES: ", table.options.data[row.index])
+
+                            table.options.data[row.index] = { ...row.original, unitValue: numericValue};
+
+                            console.log("DEPOIS: ", table.options.data[row.index])
+                        };
+                
+                        return (
+                            <InputComponent
+                                id={`unitValue-${row.id}`} // ID único baseado no `row.id`
+                                name="unitValue"
+                                type="text"
+                                placeholder="Digite o valor"
+                                fullWidth
+                                variant="standard"
+                                mask="num"
+                                maskOptions={{
+                                    mask: Number,
+                                    thousandsSeparator: ".",
+                                    radix: ",",
+                                    scale: 2,
+                                }}
+                                value={unitValue}
+                                onChange={(e) => handleValueChange(e.target.value)}
+                            />
+                        );
+                    },
                 })
             }
 
             if (headers.some((element: String) => "Valor da venda")) {
                 commonData.push({
-                    accessorFn: (row: ProductInterface) => String(row.totalValue),
+                    accessorFn: (row: ProductInterface) => String(row.totalValue.toLocaleString("pt-br")),
                     id: 'totalValue',
                     header: 'Valor da venda',
-                    filterFn: 'lessThan'
+                    filterFn: 'autocomplete',
+                    enableEditing: false
                 })
             }
 
@@ -248,7 +370,7 @@ const ProductsScreen = () => {
     const handleCreateProduct = async (data: ProductInterface) => {
         console.log(data)
         console.log(LoginData.token)
-        await api.post("/user/signin", data, {
+        await api.post("product/create", data, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
             }
@@ -274,14 +396,13 @@ const ProductsScreen = () => {
     const handleUpdateProduct = async (data: ProductInterface) => {
         console.log(data)
         console.log(LoginData.token)
-        await api.put(`/user/${data.id}`, data, {
+        await api.put(`/product/${data.id}`, data, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
             }
         })
             .then((response) => {
                 const responseData = response.data;
-
                 console.log(responseData)
                 getProducts();
             })
