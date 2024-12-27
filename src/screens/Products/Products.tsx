@@ -46,9 +46,7 @@ const ProductsScreen = () => {
 
                 if (isProductResponse(responseData.data)) {
                     const { headers, data: products, isAdmin, isStockWorker } = responseData.data;
-                    console.log("Headers:", headers);
                     console.table(products);
-                    console.log("Admin:", isAdmin, "Stock Worker:", isStockWorker);
                     setHeaders(headers);
                     setProducts(products);
                 } else {
@@ -166,27 +164,31 @@ const ProductsScreen = () => {
                     header: 'ICMS',
                     filterFn: 'lessThan',
                     Edit: ({ cell, column, row, table }) => {
+                        const creationMode = row.original?.id === null || Number(row.original?.id) === 0;
                         const [icms, setIcms] = useState<string>(
-                            row.original.icms.toLocaleString("pt-br") // Inicialize com o valor formatado
+                            row.original.icms.toLocaleString("pt-br")
                         );
-                
+
                         const handleValueChange = (value: string) => {
-                            const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.')); // Converte para número
-                            setIcms(value); // Atualize o estado local
-                            // row.original.icms = numericValue; // Atualize diretamente a linha original
-                            // table.options.data[row.index].icms = numericValue; // Atualize os dados na tabela
-                            table.setEditingRow(row)
+                            const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+                            setIcms(value);
 
-                            console.log("ANTES: ", table.options.data[row.index])
-
-                            table.options.data[row.index] = { ...row.original, icms: numericValue};
-
-                            console.log("DEPOIS: ", table.options.data[row.index])
+                            if (creationMode) {
+                                row._valuesCache = {
+                                    ...row._valuesCache,
+                                    icms: numericValue
+                                }
+                                table.setCreatingRow(row);
+                            }
+                            else {
+                                table.setEditingRow(row);
+                                table.options.data[row.index] = { ...row.original, icms: numericValue };
+                            }
                         };
-                
+
                         return (
                             <InputComponent
-                                id={`icms-${row.id}`} // ID único baseado no `row.id`
+                                id={`icms-${row.id}`}
                                 name="icms"
                                 type="text"
                                 placeholder="Digite o valor"
@@ -214,28 +216,29 @@ const ProductsScreen = () => {
                     header: 'Quantidade',
                     filterFn: 'lessThan',
                     Edit: ({ cell, column, row, table }) => {
-                        const [amount, setAmount] = useState<string>(
-                            row.original.amount.toLocaleString("pt-br") // Inicialize com o valor formatado
-                        );
-                
+                        const creationMode = row.original?.id === null || Number(row.original?.id) === 0;
+                        const [amount, setAmount] = useState<string>(row.original.amount.toLocaleString("pt-br"));
+
                         const handleValueChange = (value: string) => {
-                            const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.')); // Converte para número
-                            setAmount(value); // Atualize o estado local
-                            // row.original.amount = numericValue; // Atualize diretamente a linha original
-                            // table.options.data[row.index].amount = numericValue; // Atualize os dados na tabela
-                            table.setCreatingRow(row);
-                            table.setEditingRow(row);
+                            const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+                            setAmount(value);
 
-                            console.log("ANTES: ", table.options.data[row.index])
-
-                            table.options.data[row.index] = { ...row.original, amount: numericValue};
-
-                            console.log("DEPOIS: ", table.options.data[row.index])
+                            if (creationMode) {
+                                row._valuesCache = {
+                                    ...row._valuesCache,
+                                    amount: numericValue
+                                }
+                                table.setCreatingRow(row);
+                            }
+                            else {
+                                table.setEditingRow(row);
+                                table.options.data[row.index] = { ...row.original, amount: numericValue };
+                            }
                         };
-                
+
                         return (
                             <InputComponent
-                                id={`amount-${row.id}`} // ID único baseado no `row.id`
+                                id={`amount-${row.id}`}
                                 name="amount"
                                 type="text"
                                 placeholder="Digite o valor"
@@ -254,7 +257,7 @@ const ProductsScreen = () => {
                         );
                     },
                 });
-                
+
             }
 
             if (headers.some((element: String) => "Valor de custo")) {
@@ -264,27 +267,31 @@ const ProductsScreen = () => {
                     header: 'Valor de custo',
                     filterFn: 'lessThan',
                     Edit: ({ cell, column, row, table }) => {
+                        const creationMode = row.original?.id === null || Number(row.original?.id) === 0;
                         const [unitValue, setUnitValue] = useState<string>(
-                            row.original.unitValue.toLocaleString("pt-br") // Inicialize com o valor formatado
+                            row.original.unitValue.toLocaleString("pt-br")
                         );
-                
+
                         const handleValueChange = (value: string) => {
-                            const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.')); // Converte para número
-                            setUnitValue(value); // Atualize o estado local
-                            // row.original.unitValue = numericValue; // Atualize diretamente a linha original
-                            // table.options.data[row.index].unitValue = numericValue; // Atualize os dados na tabela
-                            table.setEditingRow(row)
+                            const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+                            setUnitValue(value);
 
-                            console.log("ANTES: ", table.options.data[row.index])
-
-                            table.options.data[row.index] = { ...row.original, unitValue: numericValue};
-
-                            console.log("DEPOIS: ", table.options.data[row.index])
+                            if (creationMode) {
+                                row._valuesCache = {
+                                    ...row._valuesCache,
+                                    unitValue: numericValue
+                                }
+                                table.setCreatingRow(row);
+                            }
+                            else {
+                                table.setEditingRow(row);
+                                table.options.data[row.index] = { ...row.original, unitValue: numericValue };
+                            }
                         };
-                
+
                         return (
                             <InputComponent
-                                id={`unitValue-${row.id}`} // ID único baseado no `row.id`
+                                id={`unitValue-${row.id}`}
                                 name="unitValue"
                                 type="text"
                                 placeholder="Digite o valor"
@@ -315,10 +322,6 @@ const ProductsScreen = () => {
                 })
             }
 
-            // RESOLVER:
-            // RENDERIZAÇÃO DE CAMPOS ICMS, QUANTIDADE, VALOR DE CUSTO E VALOR UNITÁRIO
-            console.log(headers)
-
             commonData.push({
                 //accessorFn: (row: ProductInterface) => new Date(row.registerDate),
                 id: 'nameUser',
@@ -330,32 +333,31 @@ const ProductsScreen = () => {
                     disabled: true,
                 },
             });
-            commonData.push(
-                {
-                    accessorFn: (row: ProductInterface) => new Date(row.registerDate),
-                    id: 'dateRegister',
-                    header: 'Data de registro',
-                    filterVariant: 'date',
-                    filterFn: 'lessThan',
-                    sortingFn: 'datetime',
-                    enableEditing: false,
-                    Cell: ({ cell }) => {
-                        const date = cell.getValue<Date>();
-                        if (date instanceof Date && !isNaN(date.getTime())) {
-                            return date.toLocaleDateString("pt-BR", { day: '2-digit', month: '2-digit', year: 'numeric' });
-                        }
-                        return '';
+            commonData.push({
+                accessorFn: (row: ProductInterface) => new Date(row.registerDate),
+                id: 'dateRegister',
+                header: 'Data de registro',
+                filterVariant: 'date',
+                filterFn: 'lessThan',
+                sortingFn: 'datetime',
+                enableEditing: false,
+                Cell: ({ cell }) => {
+                    const date = cell.getValue<Date>();
+                    if (date instanceof Date && !isNaN(date.getTime())) {
+                        return date.toLocaleDateString("pt-BR", { day: '2-digit', month: '2-digit', year: 'numeric' });
+                    }
+                    return '';
+                },
+                Header: ({ column }) => <em>{column.columnDef.header}</em>,
+                muiFilterTextFieldProps: {
+                    sx: {
+                        minWidth: '250px',
                     },
-                    Header: ({ column }) => <em>{column.columnDef.header}</em>,
-                    muiFilterTextFieldProps: {
-                        sx: {
-                            minWidth: '250px',
-                        },
-                    },
-                    muiEditTextFieldProps: {
-                        disabled: true,
-                    },
-                })
+                },
+                muiEditTextFieldProps: {
+                    disabled: true,
+                },
+            });
 
             return commonData;
         },

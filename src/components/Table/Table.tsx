@@ -141,12 +141,19 @@ const TableComponent: React.FC<TableComponentInterface> = (props: TableComponent
         table,
         row
     }) => {
-        console.log(values)
-        console.log(row)
-        console.log(table.options)
-        console.log(table.options.data[row.index])
-        //props.create(table.options.data[row.index]);
+        /*
+       console.log("NO TABLE: ")
+       console.log("VALUES: ", values)
+       console.log("VALUES (2A OPCAO): ", table.options.data[row.index])
+        props.create(values);
         //table.setCreatingRow(null);
+        */
+        console.log(row.index)
+        console.log("ENVIO: ", values)
+        props.create(values);
+        //table.setCreatingRow(null);
+        //table.options.onDataChange(newData); // Atualiza os dados            table.setCreatingRow(false); // Sai do modo de criação
+        
     };
 
     //UPDATE action
