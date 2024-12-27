@@ -434,8 +434,7 @@ const ProductsScreen = () => {
 
     const handleDeleteProduct = async (data: number) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
-            alert(`user deleted! Id: ${data}`)
-            await api.delete(`/user/${data}`, {
+            await api.delete(`/product/${data}`, {
                 headers: {
                     Authorization: `Bearer ${LoginData.token}`,
                 }
