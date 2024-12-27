@@ -79,7 +79,6 @@ const PermissionScreen = () => {
     }
 
     useEffect(() => {
-        console.log(configData)
     }, [configData])
 
     return <BoxComponent sx={{

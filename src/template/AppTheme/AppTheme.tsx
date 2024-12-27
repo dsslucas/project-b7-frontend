@@ -151,7 +151,6 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
 
     function handleClickBreadcrumb(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, pathname: string) {
         event.preventDefault();
-        console.info('You clicked a breadcrumb.');
         navigate(pathname);
     }
 

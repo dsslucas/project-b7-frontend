@@ -143,7 +143,6 @@ const UsersScreen = () => {
 
                 if (isUsersArray(responseData.data)) {
                     const content: UserInterface[] = responseData.data;
-                    console.table(content);
                     setUsers(content);
                 } else {
                     console.error("O tipo de dados recebido não é um array.");
@@ -162,8 +161,6 @@ const UsersScreen = () => {
     };
 
     const handleCreateUser = async (data: UserInterface) => {
-        console.log(data)
-        console.log(LoginData.token)
         await api.post("/user/signin", data, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
@@ -171,8 +168,6 @@ const UsersScreen = () => {
         })
             .then((response) => {
                 const responseData = response.data;
-
-                console.log(responseData)
                 getUsers();
             })
             .catch((error) => {
@@ -188,8 +183,6 @@ const UsersScreen = () => {
     }
 
     const handleUpdateUser = async (data: UserInterface) => {
-        console.log(data)
-        console.log(LoginData.token)
         await api.put(`/user/${data.id}`, data, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
@@ -197,8 +190,6 @@ const UsersScreen = () => {
         })
             .then((response) => {
                 const responseData = response.data;
-
-                console.log(responseData)
                 getUsers();
             })
             .catch((error) => {
@@ -223,8 +214,6 @@ const UsersScreen = () => {
             })
                 .then((response) => {
                     const responseData = response.data;
-
-                    console.log(responseData)
                     getUsers();
                 })
                 .catch((error) => {

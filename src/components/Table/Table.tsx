@@ -151,8 +151,6 @@ const TableComponent: React.FC<TableComponentInterface> = (props: TableComponent
         table,
         row,
     }) => {
-        console.log(values)
-        //props.update(table.options.data[row.index]);
         props.update(values)
         table.setEditingRow(null);
     };    
@@ -197,15 +195,6 @@ const TableComponent: React.FC<TableComponentInterface> = (props: TableComponent
             variant: 'outlined',
         },
         enableEditing: true,
-        // muiEditTextFieldProps: ({ cell }) => ({
-        //     onChange: (event) => {
-        //         console.info(event, cell.id);
-        //         console.log(cell.column.id)
-        //         console.log("BEFORE: ", event.target.value)
-        //         console.log("AFTER: ", CommonFunctions().transformMaskNumber(event.target.value))
-
-        //     },            
-        // }),
         createDisplayMode: 'row',
         editDisplayMode: 'row',
         getRowId: (row) => row.id,

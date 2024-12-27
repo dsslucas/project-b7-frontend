@@ -46,7 +46,6 @@ const ProductsScreen = () => {
 
                 if (isProductResponse(responseData.data)) {
                     const { headers, data: products, isAdmin, isStockWorker } = responseData.data;
-                    console.table(products);
                     setHeaders(headers);
                     setProducts(products);
                 } else {
@@ -388,8 +387,6 @@ const ProductsScreen = () => {
     }, []);
 
     const handleCreateProduct = async (data: ProductInterface) => {
-        console.log(data)
-        console.log(LoginData.token)
         await api.post("/product/create", {
             name: data.nameProduct,
             sku: Number(data.sku),
@@ -406,8 +403,6 @@ const ProductsScreen = () => {
         })
             .then((response) => {
                 const responseData = response.data;
-
-                console.log(responseData)
                 getProducts();
             })
             .catch((error) => {
@@ -423,8 +418,6 @@ const ProductsScreen = () => {
     }
 
     const handleUpdateProduct = async (data: ProductInterface) => {
-        console.log(data)
-        console.log(LoginData.token)
         await api.put(`/product/${data.id}`, {
             name: data.nameProduct,
             sku: Number(data.sku),
@@ -441,7 +434,6 @@ const ProductsScreen = () => {
         })
             .then((response) => {
                 const responseData = response.data;
-                console.log(responseData)
                 getProducts();
             })
             .catch((error) => {
@@ -465,8 +457,6 @@ const ProductsScreen = () => {
             })
                 .then((response) => {
                     const responseData = response.data;
-
-                    console.log(responseData)
                     getProducts();
                 })
                 .catch((error) => {

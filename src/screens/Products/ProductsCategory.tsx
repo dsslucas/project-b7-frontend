@@ -29,15 +29,10 @@ const ProductsCategoryScreen = () => {
             })
             .then((response) => {
                 const responseData = response.data;
-                console.log(responseData.data)
 
                 if (isProductCategoryType(responseData.data)) {
                     const content: ProductCategoryTypeInterface[] = responseData.data;
-                    console.table(content);
                     setProductsCategoryType(content);
-
-                    console.log("Dados carregados para productsCategoryType:", productsCategoryType);
-
                 } else {
                     console.error("O tipo de dados recebido não é um array.");
                 }
@@ -63,11 +58,9 @@ const ProductsCategoryScreen = () => {
             })
             .then((response) => {
                 const responseData = response.data;
-                console.log(responseData.data)
 
                 if (isProductCategory(responseData.data)) {
                     const content: ProductCategoryInterface[] = responseData.data;
-                    console.table(content);
                     setProductsCategory(content);
                 } else {
                     console.error("O tipo de dados recebido não é um array.");
@@ -140,7 +133,6 @@ const ProductsCategoryScreen = () => {
     }, []);
 
     const handleCreateProductCategory = async (data: ProductCategoryInterface) => {
-        console.log(LoginData.token)
         await api.post("/product/category/create", {
             ...data,
             type: {
@@ -153,8 +145,6 @@ const ProductsCategoryScreen = () => {
         })
             .then((response) => {
                 const responseData = response.data;
-
-                console.log(responseData)
                 getProductsCategory();
             })
             .catch((error) => {
@@ -170,9 +160,6 @@ const ProductsCategoryScreen = () => {
     }
 
     const handleUpdateProductCategory = async (data: ProductCategoryInterface) => {
-        console.log(data)
-        console.log(LoginData.token)
-
         await api.put(`/product/category/${data.id}`, {
             ...data,
             type: {
@@ -185,8 +172,6 @@ const ProductsCategoryScreen = () => {
         })
             .then((response) => {
                 const responseData = response.data;
-
-                console.log(responseData)
                 getProductsCategory();
             })
             .catch((error) => {
@@ -211,8 +196,6 @@ const ProductsCategoryScreen = () => {
             })
                 .then((response) => {
                     const responseData = response.data;
-
-                    console.log(responseData)
                     getProductsCategory();
                 })
                 .catch((error) => {
