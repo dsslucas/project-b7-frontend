@@ -38,6 +38,7 @@ export interface ProductResponse {
 
 export interface ProductInterface {
     id: number;
+    name: string; // send for payload
     nameProduct: string;
     nameUser: string;
     active: boolean;

@@ -108,26 +108,34 @@ const ProductsScreen = () => {
                     accessorKey: 'sku',
                     header: 'SKU',
                     enableEditing: (row) => {
-                        // Verifica se o valor de 'sku' é vazio ou nulo
+                        // Check if SKU is for editing or creating
                         return String(row?.getValue('sku') ?? "") === "";
                     },
                     filterVariant: "autocomplete",
-                    accessorFn: (row: any) => String(row.sku)
+                    accessorFn: (row: any) => String(row.sku),
                 }, {
                     accessorKey: 'nameProduct',
                     filterVariant: 'autocomplete',
                     header: 'Nome Product',
                     //size: 100,
-                    muiEditTextFieldProps: {
-                        required: true,
-                        // error: !!validationErrors?.name,
-                        // helperText: validationErrors?.name,
-                        // onFocus: () =>
-                        //     setValidationErrors({
-                        //         ...validationErrors,
-                        //         name: undefined,
-                        //     }),
-                    }
+                    muiEditTextFieldProps: ({ cell, row }) => {
+                        return ({
+                            value: String(row.original.nameProduct || ''),
+                            onChange: (event) => {
+                                row._valuesCache = {
+                                    ...row._valuesCache,
+                                    nameProduct: event.target.value,
+                                    name: event.target.value
+                                }
+
+                                row.original = {
+                                    ...row.original,
+                                    nameProduct: event.target.value,
+                                    name: event.target.value
+                                }
+                            },
+                        })
+                    },
                 }, {
                     accessorFn: (row: ProductInterface) => String(row.active ? "ATIVO" : "INATIVO"),
                     accessorKey: 'active',
@@ -138,8 +146,24 @@ const ProductsScreen = () => {
                         { value: true, label: 'ATIVO' },
                         { value: false, label: 'INATIVO' },
                     ],
-                    muiEditTextFieldProps: {
-                        select: true,
+                    muiEditTextFieldProps: ({ cell, row }) => {
+                        return {
+                            select: true,
+                            value: String(row.original.active),
+                            defaultValue: String(row.original.active),
+                            onChange: (event) => {
+                                row._valuesCache = {
+                                    ...row._valuesCache,
+                                    active: Boolean(event.target.value)
+                                }
+
+                                row.original = {
+                                    ...row.original,
+                                    active: Boolean(event.target.value)
+                                }                                    
+                            },
+                        }
+                        
                     },
                 },
                 {
@@ -153,14 +177,11 @@ const ProductsScreen = () => {
                         value: String(element.id),
                     })),
                     muiEditTextFieldProps: ({ cell, row }) => {
-                        console.log("row original: ", row.original)
-                        console.log("values cache: ", row._valuesCache)
                         return ({
                             select: true,
                             value: String(row.original.category.id || ''),
                             defaultValue: String(row.original.category.id || ''),
                             onChange: (event) => {
-                                console.log(event.target.value)
                                 row._valuesCache = {
                                     ...row._valuesCache,
                                     category:{
@@ -208,8 +229,8 @@ const ProductsScreen = () => {
                                 table.setCreatingRow(row);
                             }
                             else {
-                                row._valuesCache = {
-                                    ...row._valuesCache,
+                                row.original = {
+                                    ...row.original,
                                     icms: numericValue
                                 }
                                 table.setEditingRow(row);
@@ -264,8 +285,8 @@ const ProductsScreen = () => {
                                 table.setCreatingRow(row);
                             }
                             else {
-                                row._valuesCache = {
-                                    ...row._valuesCache,
+                                row.original = {
+                                    ...row.original,
                                     amount: numericValue
                                 }
                                 table.setEditingRow(row);
@@ -322,8 +343,8 @@ const ProductsScreen = () => {
                                 table.setCreatingRow(row);
                             }
                             else {
-                                row._valuesCache = {
-                                    ...row._valuesCache,
+                                row.original = {
+                                    ...row.original,
                                     unitValue: numericValue
                                 }
                                 table.setEditingRow(row);
@@ -446,7 +467,6 @@ const ProductsScreen = () => {
     }
 
     const handleUpdateProduct = async (data: ProductInterface) => {
-        console.log(data)
         await api.put(`/product/${data.id}`, {
             name: data.nameProduct,
             sku: Number(data.sku),
