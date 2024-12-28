@@ -143,21 +143,44 @@ const ProductsScreen = () => {
                     },
                 },
                 {
-                    accessorFn: (row: ProductInterface) => String(row.category.name),
+                    accessorFn: (row: ProductInterface) => row.category.name, // Exibe o nome da categoria
                     accessorKey: 'category',
                     header: 'Categoria',
                     editVariant: 'select',
                     filterVariant: 'select',
-                    editSelectOptions: productsCategory.map((element: ProductCategoryInterface) => {
-                        return {
-                            label: element.name,
-                            value: element.id
-                        }
-                    }),
-                    muiEditTextFieldProps: {
-                        select: true,
+                    editSelectOptions: productsCategory.map((element: ProductCategoryInterface) => ({
+                        label: element.name,
+                        value: String(element.id),
+                    })),
+                    muiEditTextFieldProps: ({ cell, row }) => {
+                        console.log("row original: ", row.original)
+                        console.log("values cache: ", row._valuesCache)
+                        return ({
+                            select: true,
+                            value: String(row.original.category.id || ''),
+                            defaultValue: String(row.original.category.id || ''),
+                            onChange: (event) => {
+                                console.log(event.target.value)
+                                row._valuesCache = {
+                                    ...row._valuesCache,
+                                    category:{
+                                        id: Number(event.target.value)
+                                    }
+                                }
+
+                                row.original.category = {
+                                    ...row.original.category,
+                                    id: Number(event.target.value)
+                                }
+                            },
+                        })
                     },
-                },
+                    Cell: ({ row }) => {
+                        const category = productsCategory.find((cat) => cat.id === row.original.category.id);
+                        return category ? category.name : 'Sem categoria';
+                    },
+                }
+                
             ];
 
             if (headers.some((element: String) => "ICMS")) {
@@ -431,7 +454,7 @@ const ProductsScreen = () => {
             unitValue: Number(data.unitValue),
             icms: Number(data.icms),
             category: {
-                id: data.category
+                id: data.category.id
             }
         }, {
             headers: {

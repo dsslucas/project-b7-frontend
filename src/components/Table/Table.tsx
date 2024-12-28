@@ -151,7 +151,7 @@ const TableComponent: React.FC<TableComponentInterface> = (props: TableComponent
         table,
         row,
     }) => {
-        props.update(values)
+        props.update(row.original)
         table.setEditingRow(null);
     };    
 
