@@ -10,6 +10,7 @@ import { TextField } from "@mui/material";
 import InputComponent from "../../components/Input/Input";
 
 import { IMaskInput } from "react-imask";
+import { CommonFunctions } from "../../common/common";
 
 const ProductsScreen = () => {
     const { LoginData } = useSelector((state: any) => state);
@@ -172,7 +173,8 @@ const ProductsScreen = () => {
                         );
 
                         const handleValueChange = (value: string) => {
-                            const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+                            const numericValue = CommonFunctions().transformStringToNumericValue(value);
+                            
                             setIcms(value);
 
                             if (creationMode) {
@@ -226,13 +228,15 @@ const ProductsScreen = () => {
                         const [amount, setAmount] = useState<string>(row.original.amount.toLocaleString("pt-br"));
 
                         const handleValueChange = (value: string) => {
-                            const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+                            const numericValue = CommonFunctions().transformStringToNumericValue(value);
+                            
                             setAmount(value);
 
                             if (creationMode) {
                                 row._valuesCache = {
                                     ...row._valuesCache,
-                                    amount: numericValue
+                                    amount: numericValue,
+                                    totalValue: Number()
                                 }
                                 table.setCreatingRow(row);
                             }
@@ -283,7 +287,8 @@ const ProductsScreen = () => {
                         );
 
                         const handleValueChange = (value: string) => {
-                            const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+                            const numericValue = CommonFunctions().transformStringToNumericValue(value);
+                            
                             setUnitValue(value);
 
                             if (creationMode) {
@@ -418,6 +423,7 @@ const ProductsScreen = () => {
     }
 
     const handleUpdateProduct = async (data: ProductInterface) => {
+        console.log(data)
         await api.put(`/product/${data.id}`, {
             name: data.nameProduct,
             sku: Number(data.sku),

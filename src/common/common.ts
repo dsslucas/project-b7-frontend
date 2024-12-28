@@ -16,9 +16,14 @@ export function CommonFunctions() {
     };
   }
 
+  function transformStringToNumericValue(value: string){
+    return parseFloat(value.replace(/\./g, '').replace(',', '.'));
+  }
+
   return {
     capitalizeFirstLetter,
-    ReturnHeaderAuthentication
+    ReturnHeaderAuthentication,
+    transformStringToNumericValue
   };
 }
 
