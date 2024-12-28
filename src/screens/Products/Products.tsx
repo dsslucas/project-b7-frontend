@@ -206,7 +206,7 @@ const ProductsScreen = () => {
                 
             ];
 
-            if (headers.some((element: String) => "ICMS")) {
+            if (headers.some((element: String) => element === "ICMS")) {
                 commonData.push({
                     accessorFn: (row: ProductInterface) => String(row.icms.toLocaleString("pt-br")),
                     id: 'icms',
@@ -263,7 +263,7 @@ const ProductsScreen = () => {
                 })
             }
 
-            if (headers.some((element: String) => "Quantidade")) {
+            if (headers.some((element: String) => element === "Quantidade")) {
                 commonData.push({
                     accessorFn: (row: ProductInterface) => row.amount.toLocaleString("pt-br"),
                     id: 'amount',
@@ -320,7 +320,7 @@ const ProductsScreen = () => {
 
             }
 
-            if (headers.some((element: String) => "Valor de custo")) {
+            if (headers.some((element: String) => element === "Valor de custo")) {
                 commonData.push({
                     accessorFn: (row: ProductInterface) => String(row.unitValue.toLocaleString("pt-br")),
                     id: 'unitValue',
@@ -380,7 +380,7 @@ const ProductsScreen = () => {
                 })
             }
 
-            if (headers.some((element: String) => "Valor da venda")) {
+            if (headers.some((element: String) => element === "Valor da venda")) {
                 commonData.push({
                     accessorFn: (row: ProductInterface) => String(row.totalValue.toLocaleString("pt-br")),
                     id: 'totalValue',
@@ -429,7 +429,7 @@ const ProductsScreen = () => {
 
             return commonData;
         },
-        [productsCategory],
+        [products],
     );
 
     useEffect(() => {
