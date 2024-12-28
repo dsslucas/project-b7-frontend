@@ -2,7 +2,7 @@ export interface ResponseInterface {
     message: string;
     status: boolean;
     statusCode: number;    
-    data: ResponseLoginInterface | ConfigInfoInterface | UserInterface[];
+    data: ResponseLoginInterface | ConfigInfoInterface | UserInterface[] | UserInterface;
 }
 
 export interface ResponseLoginInterface {
@@ -23,6 +23,8 @@ export interface UserInterface {
     id: number;
     name: string;
     username: string;
+    password?: string;
+    role: string;
     roleCustom: string;
     email: string;
     registerDate: string;
@@ -61,4 +63,9 @@ export interface ProductCategoryInterface {
 export interface ProductCategoryTypeInterface {
     id: number;
     name: string;
+}
+
+export interface ProfilesTypeInterface {
+    value: string;
+    label: string;
 }
