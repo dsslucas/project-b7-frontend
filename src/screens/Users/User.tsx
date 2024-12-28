@@ -47,9 +47,29 @@ const UserScreen = () => {
         });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         console.log('Submitted Data:', formValues);
+
+        await api.put(`/user/${formValues.id}`, formValues, {
+            headers: {
+                Authorization: `Bearer ${LoginData.token}`,
+            }
+        })
+            .then((response) => {
+                const responseData = response.data;
+                getUserInfo();
+            })
+            .catch((error) => {
+                console.error(error);
+                if (error.response) {
+                    console.error("Erro no servidor:", error.response.data);
+                } else if (error.request) {
+                    console.error("Erro de requisição. Tente novamente mais tarde.");
+                } else {
+                    console.error("Erro inesperado:", error.message);
+                }
+            });
     };
 
     const getUserInfo = async () => {
