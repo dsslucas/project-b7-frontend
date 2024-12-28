@@ -120,6 +120,7 @@ const ProductsScreen = () => {
                     //size: 100,
                     muiEditTextFieldProps: ({ cell, row }) => {
                         return ({
+                            required: true,
                             value: String(row.original.nameProduct || ''),
                             onChange: (event) => {
                                 row._valuesCache = {
@@ -168,7 +169,7 @@ const ProductsScreen = () => {
                     }
                 },
                 {
-                    accessorFn: (row: ProductInterface) => row.category.name, // Exibe o nome da categoria
+                    accessorFn: (row: ProductInterface) => row.category.name,
                     accessorKey: 'category',
                     header: 'Categoria',
                     editVariant: 'select',
