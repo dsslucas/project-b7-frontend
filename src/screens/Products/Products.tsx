@@ -153,8 +153,6 @@ const ProductsScreen = () => {
                             defaultValue: String(row.original.active),
                             onChange: (event) => {
                                 const result: boolean = String(event.target.value) === 'true';
-                                console.log(event.target.value)
-                                console.log(result)
 
                                 row._valuesCache = {
                                     ...row._valuesCache,
