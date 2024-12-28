@@ -31,7 +31,6 @@ const PermissionScreen = () => {
     
                 if (isConfigInfoArray(responseData.data)) {
                     const content: ConfigInfoInterface[] = responseData.data;
-                    console.log(content);
                     setConfigData(content);
                 } else {
                     console.error("O tipo de dados recebido não é um array.");
@@ -60,7 +59,6 @@ const PermissionScreen = () => {
             .then((response) => {
                 const dataUpdated = configData.map((item) => {
                     if (item.id === id) {
-                        console.log("ENTREI AQUI")
                         return { ...item, active: checked };
                     } else {
                         return item;
@@ -81,7 +79,6 @@ const PermissionScreen = () => {
     }
 
     useEffect(() => {
-        console.log(configData)
     }, [configData])
 
     return <BoxComponent sx={{

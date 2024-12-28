@@ -123,12 +123,10 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
     };
 
     const scrollToTop = () => {
-        console.log("cliquei")
         window.scroll({ top: 0, left: 0, behavior: 'smooth' })
     };
 
     const logoutUser = async () => {
-        console.log(loginDataRedux.token)
         await api.post<ResponseInterface>("/auth/logout", {}, {
             headers: { 
                 Authorization: `Bearer ${loginDataRedux.token}` 
@@ -153,7 +151,6 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
 
     function handleClickBreadcrumb(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, pathname: string) {
         event.preventDefault();
-        console.info('You clicked a breadcrumb.');
         navigate(pathname);
     }
 
@@ -168,8 +165,6 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
                     href: `/${element}`,
                 })),
         ];
-
-        console.log(paths)
 
         const breadcrumbs = paths
             .slice(0, -1)

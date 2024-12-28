@@ -216,7 +216,6 @@ const Example = () => {
         values,
         table,
     }) => {
-        console.log(values)
         alert("enviei")
         table.setCreatingRow(null);
     };
@@ -226,7 +225,6 @@ const Example = () => {
         values,
         table,
     }) => {
-        console.log(values)
         alert("atualizei")
         table.setEditingRow(null);
     };

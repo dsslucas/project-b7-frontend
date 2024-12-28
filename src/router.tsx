@@ -13,7 +13,6 @@ import PermissionsScreen from "./screens/Permissions/Permissions";
 const Router = () => {
     const { LoginData } = useSelector((state: any) => state);
     const isAdmin = LoginData.role === "ADMIN";
-    console.log(LoginData)
 
     if (LoginData.token === null) return <Routes>
         <Route path="/login">

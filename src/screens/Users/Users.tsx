@@ -26,46 +26,66 @@ const UsersScreen = () => {
                 filterVariant: 'autocomplete',
                 header: 'Nome',
                 size: 100,
-                muiEditTextFieldProps: {
-                    required: true,
-                    // error: !!validationErrors?.name,
-                    // helperText: validationErrors?.name,
-                    // onFocus: () =>
-                    //     setValidationErrors({
-                    //         ...validationErrors,
-                    //         name: undefined,
-                    //     }),
-                }
+                muiEditTextFieldProps: ({ cell, row }) => {
+                    return ({
+                        required: true,
+                        value: String(row.original.name || ''),
+                        onChange: (event) => {
+                            row._valuesCache = {
+                                ...row._valuesCache,
+                                name: event.target.value,
+                            }
+
+                            row.original = {
+                                ...row.original,
+                                name: event.target.value,
+                            }
+                        },
+                    })
+                },
             }, {
                 accessorKey: 'username',
                 filterVariant: 'autocomplete',
                 header: 'Username',
                 size: 100,
-                muiEditTextFieldProps: {
-                    required: false,
-                    // error: !!validationErrors?.name,
-                    // helperText: validationErrors?.name,
-                    // onFocus: () =>
-                    //     setValidationErrors({
-                    //         ...validationErrors,
-                    //         name: undefined,
-                    //     }),
-                }
+                muiEditTextFieldProps: ({ cell, row }) => {
+                    return ({
+                        required: true,
+                        value: String(row.original.username || ''),
+                        onChange: (event) => {
+                            row._valuesCache = {
+                                ...row._valuesCache,
+                                username: event.target.value,
+                            }
+
+                            row.original = {
+                                ...row.original,
+                                username: event.target.value,
+                            }
+                        },
+                    })
+                },
             }, {
                 accessorKey: 'email',
                 header: 'E-mail',
                 filterVariant: 'autocomplete',
-                muiEditTextFieldProps: {
-                    type: 'email',
-                    required: true,
-                    // error: !!validationErrors?.email,
-                    // helperText: validationErrors?.email,
-                    // onFocus: () =>
-                    //     setValidationErrors({
-                    //         ...validationErrors,
-                    //         email: undefined,
-                    //     }),
-                }
+                muiEditTextFieldProps: ({ cell, row }) => {
+                    return ({
+                        required: true,
+                        value: String(row.original.email || ''),
+                        onChange: (event) => {
+                            row._valuesCache = {
+                                ...row._valuesCache,
+                                email: event.target.value,
+                            }
+
+                            row.original = {
+                                ...row.original,
+                                email: event.target.value,
+                            }
+                        },
+                    })
+                },
             }, {
                 accessorFn: (row: UserInterface) => String(row.roleCustom),
                 accessorKey: 'role',
@@ -76,10 +96,23 @@ const UsersScreen = () => {
                     { value: 'ADMIN', label: 'Administrador' },
                     { value: 'STOCK_WORKER', label: 'Estoquista' },
                 ],
-                muiEditTextFieldProps: {
-                    select: true,
-                    // error: !!validationErrors?.state,
-                    // helperText: validationErrors?.state,
+                muiEditTextFieldProps: ({ cell, row }) => {
+                    return ({
+                        select: true,
+                        value: String(row.original.role),
+                        defaultValue: String(row.original.role),
+                        onChange: (event) => {
+                            row._valuesCache = {
+                                ...row._valuesCache,
+                                role: event.target.value
+                            }
+
+                            row.original = {
+                                ...row.original,
+                                role: event.target.value
+                            }
+                        },
+                    })
                 },
             }, {
                 accessorFn: (row: UserInterface) => String(row.active ? "ATIVO" : "INATIVO"),
@@ -91,9 +124,26 @@ const UsersScreen = () => {
                     { value: true, label: 'ATIVO' },
                     { value: false, label: 'INATIVO' },
                 ],
-                muiEditTextFieldProps: {
-                    select: true,
-                },
+                muiEditTextFieldProps: ({ cell, row }) => {
+                    return {
+                        select: true,
+                        value: String(row.original.active),
+                        defaultValue: String(row.original.active),
+                        onChange: (event) => {
+                            const result: boolean = String(event.target.value) === 'true';
+
+                            row._valuesCache = {
+                                ...row._valuesCache,
+                                active: result
+                            }
+
+                            row.original = {
+                                ...row.original,
+                                active: result
+                            }                                    
+                        },
+                    }                        
+                }
             }, {
                 accessorFn: (row: UserInterface) => new Date(row.registerDate),
                 id: 'dateRegister',
@@ -143,7 +193,6 @@ const UsersScreen = () => {
 
                 if (isUsersArray(responseData.data)) {
                     const content: UserInterface[] = responseData.data;
-                    console.table(content);
                     setUsers(content);
                 } else {
                     console.error("O tipo de dados recebido não é um array.");
@@ -162,8 +211,6 @@ const UsersScreen = () => {
     };
 
     const handleCreateUser = async (data: UserInterface) => {
-        console.log(data)
-        console.log(LoginData.token)
         await api.post("/user/signin", data, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
@@ -171,8 +218,6 @@ const UsersScreen = () => {
         })
             .then((response) => {
                 const responseData = response.data;
-
-                console.log(responseData)
                 getUsers();
             })
             .catch((error) => {
@@ -188,8 +233,6 @@ const UsersScreen = () => {
     }
 
     const handleUpdateUser = async (data: UserInterface) => {
-        console.log(data)
-        console.log(LoginData.token)
         await api.put(`/user/${data.id}`, data, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
@@ -197,8 +240,6 @@ const UsersScreen = () => {
         })
             .then((response) => {
                 const responseData = response.data;
-
-                console.log(responseData)
                 getUsers();
             })
             .catch((error) => {
@@ -223,8 +264,6 @@ const UsersScreen = () => {
             })
                 .then((response) => {
                     const responseData = response.data;
-
-                    console.log(responseData)
                     getUsers();
                 })
                 .catch((error) => {
