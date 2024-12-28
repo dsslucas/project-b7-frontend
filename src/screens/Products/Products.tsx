@@ -152,19 +152,22 @@ const ProductsScreen = () => {
                             value: String(row.original.active),
                             defaultValue: String(row.original.active),
                             onChange: (event) => {
+                                const result: boolean = String(event.target.value) === 'true';
+                                console.log(event.target.value)
+                                console.log(result)
+
                                 row._valuesCache = {
                                     ...row._valuesCache,
-                                    active: Boolean(event.target.value)
+                                    active: result
                                 }
 
                                 row.original = {
                                     ...row.original,
-                                    active: Boolean(event.target.value)
+                                    active: result
                                 }                                    
                             },
-                        }
-                        
-                    },
+                        }                        
+                    }
                 },
                 {
                     accessorFn: (row: ProductInterface) => row.category.name, // Exibe o nome da categoria
@@ -444,7 +447,8 @@ const ProductsScreen = () => {
             icms: Number(data.icms),
             category: {
                 id: data.category
-            }
+            },
+            active: data.active
         }, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
@@ -475,7 +479,8 @@ const ProductsScreen = () => {
             icms: Number(data.icms),
             category: {
                 id: data.category.id
-            }
+            },
+            active: data.active
         }, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
