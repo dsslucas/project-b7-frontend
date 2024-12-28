@@ -94,6 +94,23 @@ const ProductsCategoryScreen = () => {
             header: 'Nome',
             filterVariant: "autocomplete",
             size: 20,
+            muiEditTextFieldProps: ({ cell, row }) => {
+                return ({
+                    required: true,
+                    value: String(row.original.name || ''),
+                    onChange: (event) => {
+                        row._valuesCache = {
+                            ...row._valuesCache,
+                            name: event.target.value
+                        }
+
+                        row.original = {
+                            ...row.original,
+                            name: event.target.value
+                        }
+                    },
+                })
+            },
         },
         {
             accessorFn: (row: ProductCategoryInterface) => String(row.active ? "ATIVO" : "INATIVO"),
@@ -105,9 +122,26 @@ const ProductsCategoryScreen = () => {
                 { value: true, label: 'ATIVO' },
                 { value: false, label: 'INATIVO' },
             ],
-            muiEditTextFieldProps: {
-                select: true,
-            },
+            muiEditTextFieldProps: ({ cell, row }) => {
+                return {
+                    select: true,
+                    value: String(row.original.active),
+                    defaultValue: String(row.original.active),
+                    onChange: (event) => {
+                        const result: boolean = String(event.target.value) === 'true';
+
+                        row._valuesCache = {
+                            ...row._valuesCache,
+                            active: result
+                        }
+
+                        row.original = {
+                            ...row.original,
+                            active: result
+                        }                                    
+                    },
+                }                        
+            }
         },
         {
             accessorFn: (row: ProductCategoryInterface) => String(row.type?.name),
@@ -121,8 +155,26 @@ const ProductsCategoryScreen = () => {
                     value: element.id
                 }
             }),
-            muiEditTextFieldProps: {
-                select: true,
+            muiEditTextFieldProps: ({ cell, row }) => {
+                console.log(row.original)
+                return ({
+                    select: true,
+                    value: String(row.original.type.id || ''),
+                    defaultValue: String(row.original.type.id || ''),
+                    onChange: (event) => {
+                        row._valuesCache = {
+                            ...row._valuesCache,
+                            type:{
+                                id: Number(event.target.value)
+                            }
+                        }
+
+                        row.original.type = {
+                            ...row.original.type,
+                            id: Number(event.target.value)
+                        }
+                    },
+                })
             },
         },
     ], [productsCategoryType]);
@@ -163,7 +215,7 @@ const ProductsCategoryScreen = () => {
         await api.put(`/product/category/${data.id}`, {
             ...data,
             type: {
-                id: data.type
+                id: data.type.id
             }
         }, {
             headers: {
