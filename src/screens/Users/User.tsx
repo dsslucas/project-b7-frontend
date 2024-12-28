@@ -5,9 +5,7 @@ import { useSelector } from "react-redux";
 import { ResponseInterface, UserInterface } from "../../Common/interfaces";
 import InputComponent from "../../components/Input/Input";
 import ButtonComponent from "../../components/Button/Button";
-import SelectComponent from "../../components/Select/Select";
 import api from "../../api/api";
-import { SelectChangeEvent } from "@mui/material";
 
 const UserScreen = () => {
     const { LoginData } = useSelector((state: any) => state);
@@ -166,21 +164,6 @@ const UserScreen = () => {
                 type="text"
                 value={formValues.email}
                 onChange={handleChange}
-                required
-            />
-
-            <SelectComponent
-                label="Role"
-                id="role"
-                name="role"
-                type="text"
-                value={formValues.role}
-                onChange={(e: SelectChangeEvent) => console.log(e.target.value)}
-                options={[
-                    { value: 'ADMIN', label: 'Administrador' },
-                    { value: 'STOCK_WORKER', label: 'Estoquista' },
-                ]}
-                size="small"
                 required
             />
 
