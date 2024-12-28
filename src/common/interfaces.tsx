@@ -2,7 +2,7 @@ export interface ResponseInterface {
     message: string;
     status: boolean;
     statusCode: number;    
-    data: ResponseLoginInterface | ConfigInfoInterface | UserInterface[];
+    data: ResponseLoginInterface | ConfigInfoInterface | UserInterface[] | UserInterface;
 }
 
 export interface ResponseLoginInterface {
@@ -23,6 +23,7 @@ export interface UserInterface {
     id: number;
     name: string;
     username: string;
+    password?: string;
     roleCustom: string;
     email: string;
     registerDate: string;

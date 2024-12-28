@@ -8,6 +8,7 @@ interface InputInterface {
   type: string;
 
   // Optional
+  label?: string;
   placeholder?: string;
   autoFocus?: boolean;
   required?: boolean;
@@ -43,6 +44,7 @@ const InputComponent: React.FC<InputInterface> = (props: InputInterface) => {
   const {
     id,
     name,
+    label,
     type,
     placeholder,
     autoFocus,
@@ -67,6 +69,7 @@ const InputComponent: React.FC<InputInterface> = (props: InputInterface) => {
         helperText={helperText}
         id={id}
         name={name}
+        label={label}
         placeholder={placeholder}
         autoFocus={autoFocus}
         required={required}
@@ -97,6 +100,7 @@ const InputComponent: React.FC<InputInterface> = (props: InputInterface) => {
       id={id}
       type={type}
       name={name}
+      label={label}
       placeholder={placeholder}
       autoFocus={autoFocus}
       required={required}
