@@ -1,6 +1,7 @@
 import React from "react"
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { FormControl, InputLabel, MenuItem } from "@mui/material";
+import { ProfilesTypeInterface } from "../../Common/interfaces";
 
 interface SelectInterface {
     id: string;
@@ -20,6 +21,7 @@ interface SelectInterface {
     error?: boolean;
     helperText?: string;
     onChange: (event: SelectChangeEvent) => void
+    options: ProfilesTypeInterface[] | any
 }
 
 const SelectComponent: React.FC<SelectInterface> = (props: SelectInterface) => {
@@ -34,12 +36,11 @@ const SelectComponent: React.FC<SelectInterface> = (props: SelectInterface) => {
             size={props.size}
             color={props.color || (props.error ? "error" : "primary")}
         >
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
+            {props.options.map((element: ProfilesTypeInterface, index: number) => {
+                return <MenuItem key={index} value={element.value}>{element.label}</MenuItem>
+            })}
         </Select>
     </FormControl>
-
 }
 
 export default SelectComponent;
