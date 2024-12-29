@@ -4,12 +4,19 @@ import TypographyComponent from "../../components/Typography/Typography";
 import { useSelector } from "react-redux";
 import api from "../../api/api";
 import { CommonFunctions } from "../../common/common";
-import { ConfigInfoInterface, ResponseInterface } from "../../Common/interfaces";
+import { AlertInterface, ConfigInfoInterface, ResponseInterface } from "../../Common/interfaces";
 import SwitchComponent from "../../components/Switch/Switch"
+import AlertComponent from "../../components/Alert/Alert";
 
 const PermissionScreen = () => {
     const { LoginData } = useSelector((state: any) => state);
     const [configData, setConfigData] = useState<ConfigInfoInterface[]>([]);
+    const [alert, setAlert] = useState<AlertInterface>({
+        open: false,
+        title: "",
+        text: "",
+        severity: 'info'
+    });
 
     useEffect(() => {
         getConfigInfo();
@@ -28,7 +35,6 @@ const PermissionScreen = () => {
             })
             .then((response) => {
                 const responseData = response.data;
-    
                 if (isConfigInfoArray(responseData.data)) {
                     const content: ConfigInfoInterface[] = responseData.data;
                     setConfigData(content);
@@ -37,13 +43,16 @@ const PermissionScreen = () => {
                 }
             })
             .catch((error) => {
-                console.error(error);
+                console.error(error);                
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
+                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                 } else {
                     console.error("Erro inesperado:", error.message);
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
             });
     };
@@ -66,14 +75,19 @@ const PermissionScreen = () => {
                 });
 
                 setConfigData(dataUpdated);
+                console.log(response)
+                setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
             }).catch((error) => {
                 console.error(error)
                 if (error.response) {
                     console.error(error)
+                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                 } else {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
             });
     }
@@ -89,6 +103,16 @@ const PermissionScreen = () => {
             md: "30%"
         }
     }} component="div">
+        <>
+            {alert.open && (
+                <AlertComponent
+                    open={alert.open}
+                    title={alert.title}
+                    text={alert.text}
+                    severity={alert.severity}
+                />
+            )}
+        </>
         <BoxComponent sx={{}} component="header">
             <TypographyComponent component="span" variant="body2">
                 Exibição de colunas da tabela para usuários estoquistas

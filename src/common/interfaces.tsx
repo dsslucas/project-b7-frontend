@@ -69,3 +69,10 @@ export interface ProfilesTypeInterface {
     value: string;
     label: string;
 }
+
+export interface AlertInterface {
+    open: boolean;
+    title: string;
+    text: string;
+    severity: 'error' | 'info' | 'success' | 'warning';
+}

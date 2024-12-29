@@ -3,14 +3,22 @@ import BoxComponent from "../../components/Box/Box";
 import TypographyComponent from "../../components/Typography/Typography";
 import TableComponent from "../../components/Table/Table";
 import { useSelector } from "react-redux";
-import { ProductCategoryInterface, ProductCategoryTypeInterface, ResponseInterface } from "../../Common/interfaces";
+import { AlertInterface, ProductCategoryInterface, ProductCategoryTypeInterface, ResponseInterface } from "../../Common/interfaces";
 import api from "../../api/api";
 import { MRT_ColumnDef } from "material-react-table";
+import { CommonFunctions } from "../../common/common";
+import AlertComponent from "../../components/Alert/Alert";
 
 const ProductsCategoryScreen = () => {
     const { LoginData } = useSelector((state: any) => state);
     const [productsCategory, setProductsCategory] = useState<ProductCategoryInterface[]>([]);
     const [productsCategoryType, setProductsCategoryType] = useState<ProductCategoryTypeInterface[]>([]);
+    const [alert, setAlert] = useState<AlertInterface>({
+        open: false,
+        title: "",
+        text: "",
+        severity: 'info'
+    });
 
     function isProductCategory(data: unknown): data is ProductCategoryInterface[] {
         return Array.isArray(data) && data.every(item => 'id' in item);
@@ -41,10 +49,13 @@ const ProductsCategoryScreen = () => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
+                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                 } else {
                     console.error("Erro inesperado:", error.message);
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
             });
     }
@@ -70,10 +81,13 @@ const ProductsCategoryScreen = () => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
+                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                 } else {
                     console.error("Erro inesperado:", error.message);
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
             });
     };
@@ -138,9 +152,9 @@ const ProductsCategoryScreen = () => {
                         row.original = {
                             ...row.original,
                             active: result
-                        }                                    
+                        }
                     },
-                }                        
+                }
             }
         },
         {
@@ -164,7 +178,7 @@ const ProductsCategoryScreen = () => {
                     onChange: (event) => {
                         row._valuesCache = {
                             ...row._valuesCache,
-                            type:{
+                            type: {
                                 id: Number(event.target.value)
                             }
                         }
@@ -196,17 +210,20 @@ const ProductsCategoryScreen = () => {
             }
         })
             .then((response) => {
-                const responseData = response.data;
                 getProductsCategory();
+                setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
             })
             .catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
+                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                 } else {
                     console.error("Erro inesperado:", error.message);
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
             });
     }
@@ -223,41 +240,46 @@ const ProductsCategoryScreen = () => {
             }
         })
             .then((response) => {
-                const responseData = response.data;
                 getProductsCategory();
+                setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
             })
             .catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
+                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                 } else {
                     console.error("Erro inesperado:", error.message);
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
             });
     }
 
     const handleDeleteProductCategory = async (data: number) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
-            alert(`user deleted! Id: ${data}`)
             await api.delete(`/product/category/${data}`, {
                 headers: {
                     Authorization: `Bearer ${LoginData.token}`,
                 }
             })
                 .then((response) => {
-                    const responseData = response.data;
                     getProductsCategory();
+                    setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
                 })
                 .catch((error) => {
                     console.error(error);
                     if (error.response) {
                         console.error("Erro no servidor:", error.response.data);
+                        setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                     } else if (error.request) {
                         console.error("Erro de requisição. Tente novamente mais tarde.");
+                        setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                     } else {
                         console.error("Erro inesperado:", error.message);
+                        setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                     }
                 });
         }
@@ -270,6 +292,16 @@ const ProductsCategoryScreen = () => {
         width: "100%",
         gap: 2
     }} component="div">
+         <>
+            {alert.open && (
+                <AlertComponent
+                    open={alert.open}
+                    title={alert.title}
+                    text={alert.text}
+                    severity={alert.severity}
+                />
+            )}
+        </>
         <BoxComponent sx={{}} component="header">
             <TypographyComponent component="span" variant="body2">
                 Gestão da categoria de produtos

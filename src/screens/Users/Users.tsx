@@ -3,14 +3,22 @@ import BoxComponent from "../../components/Box/Box";
 import TypographyComponent from "../../components/Typography/Typography";
 import TableComponent from "../../components/Table/Table";
 import { useSelector } from "react-redux";
-import { ResponseInterface, UserInterface } from "../../Common/interfaces";
+import { AlertInterface, ResponseInterface, UserInterface } from "../../Common/interfaces";
 import api from "../../api/api";
 import { MRT_ColumnDef, MRT_Row, MRT_TableOptions } from "material-react-table";
 import { Box } from "@mui/material";
+import { CommonFunctions } from "../../common/common";
+import AlertComponent from "../../components/Alert/Alert";
 
 const UsersScreen = () => {
     const { LoginData } = useSelector((state: any) => state);
     const [users, setUsers] = useState<UserInterface[]>([]);
+    const [alert, setAlert] = useState<AlertInterface>({
+        open: false,
+        title: "",
+        text: "",
+        severity: 'info'
+    });
     const columns = useMemo<MRT_ColumnDef<UserInterface | any>[]>(
         () => [
             {
@@ -140,9 +148,9 @@ const UsersScreen = () => {
                             row.original = {
                                 ...row.original,
                                 active: result
-                            }                                    
+                            }
                         },
-                    }                        
+                    }
                 }
             }, {
                 accessorFn: (row: UserInterface) => new Date(row.registerDate),
@@ -202,10 +210,13 @@ const UsersScreen = () => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
+                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                 } else {
                     console.error("Erro inesperado:", error.message);
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
             });
     };
@@ -217,17 +228,20 @@ const UsersScreen = () => {
             }
         })
             .then((response) => {
-                const responseData = response.data;
+                setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
                 getUsers();
             })
             .catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
+                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                 } else {
                     console.error("Erro inesperado:", error.message);
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
             });
     }
@@ -239,32 +253,34 @@ const UsersScreen = () => {
             }
         })
             .then((response) => {
-                const responseData = response.data;
                 getUsers();
+                setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
             })
             .catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
+                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                 } else {
                     console.error("Erro inesperado:", error.message);
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
             });
     }
 
     const handleDeleteUser = async (data: number) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
-            alert(`user deleted! Id: ${data}`)
             await api.delete(`/user/${data}`, {
                 headers: {
                     Authorization: `Bearer ${LoginData.token}`,
                 }
             })
                 .then((response) => {
-                    const responseData = response.data;
                     getUsers();
+                    setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
                 })
                 .catch((error) => {
                     console.error(error);
@@ -286,6 +302,16 @@ const UsersScreen = () => {
         width: "100%",
         gap: 2
     }} component="div">
+        <>
+            {alert.open && (
+                <AlertComponent
+                    open={alert.open}
+                    title={alert.title}
+                    text={alert.text}
+                    severity={alert.severity}
+                />
+            )}
+        </>
         <BoxComponent sx={{}} component="header">
             <TypographyComponent component="span" variant="body2">
                 Gestão de usuários do sistema
