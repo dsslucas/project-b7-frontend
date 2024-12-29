@@ -76,3 +76,7 @@ export interface AlertInterface {
     text: string;
     severity: 'error' | 'info' | 'success' | 'warning';
 }
+
+export interface LoadingInterface {
+    open: boolean;
+}

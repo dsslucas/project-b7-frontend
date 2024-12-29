@@ -12,6 +12,7 @@ import InputComponent from "../../components/Input/Input";
 import { IMaskInput } from "react-imask";
 import { CommonFunctions } from "../../common/common";
 import AlertComponent from "../../components/Alert/Alert";
+import LoadingComponent from "../../components/Loading/Loading";
 
 const ProductsScreen = () => {
     const { LoginData } = useSelector((state: any) => state);
@@ -24,6 +25,7 @@ const ProductsScreen = () => {
         text: "",
         severity: 'info'
     });
+    const [loading, setLoading] = useState<boolean>(true);
 
     function isProductResponse(data: unknown): data is ProductResponse {
         return (
@@ -43,13 +45,13 @@ const ProductsScreen = () => {
     }
 
     const getProducts = async () => {
+        setLoading(true);
         await api
             .get<ResponseInterface>("/product/list", {
                 headers: {
                     Authorization: `Bearer ${LoginData.token}`,
                 },
-            })
-            .then((response) => {
+            }).then((response) => {
                 const responseData = response.data;
 
                 if (isProductResponse(responseData.data)) {
@@ -59,8 +61,7 @@ const ProductsScreen = () => {
                 } else {
                     console.error("O tipo de dados recebido não é um array.");
                 }
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
@@ -72,17 +73,19 @@ const ProductsScreen = () => {
                     console.error("Erro inesperado:", error.message);
                     setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
+            }).finally(() => {
+                setLoading(false);
             });
     };
 
     const getProductsCategory = async () => {
+        setLoading(true);
         await api
             .get<ResponseInterface>("/product/category/list/all", {
                 headers: {
                     Authorization: `Bearer ${LoginData.token}`,
                 },
-            })
-            .then((response) => {
+            }).then((response) => {
                 const responseData = response.data;
 
                 if (isProductCategory(responseData.data)) {
@@ -90,8 +93,7 @@ const ProductsScreen = () => {
                 } else {
                     console.error("O tipo de dados recebido não é um array.");
                 }
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
@@ -103,6 +105,8 @@ const ProductsScreen = () => {
                     console.error("Erro inesperado:", error.message);
                     setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
+            }).finally(() => {
+                setLoading(false);
             });
     }
 
@@ -451,6 +455,7 @@ const ProductsScreen = () => {
     }, []);
 
     const handleCreateProduct = async (data: ProductInterface) => {
+        setLoading(true);
         await api.post("/product/create", {
             name: data.nameProduct,
             sku: Number(data.sku),
@@ -469,8 +474,7 @@ const ProductsScreen = () => {
             .then((response) => {
                 getProducts();
                 setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
@@ -482,10 +486,13 @@ const ProductsScreen = () => {
                     console.error("Erro inesperado:", error.message);
                     setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
+            }).finally(() => {
+                setLoading(false);
             });
     }
 
     const handleUpdateProduct = async (data: ProductInterface) => {
+        setLoading(true);
         await api.put(`/product/${data.id}`, {
             name: data.nameProduct,
             sku: Number(data.sku),
@@ -505,8 +512,7 @@ const ProductsScreen = () => {
                 const responseData = response.data;
                 getProducts();
                 setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
@@ -518,11 +524,14 @@ const ProductsScreen = () => {
                     console.error("Erro inesperado:", error.message);
                     setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
+            }).finally(() => {
+                setLoading(false);
             });
     }
 
     const handleDeleteProduct = async (data: number) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
+            setLoading(true);
             await api.delete(`/product/${data}`, {
                 headers: {
                     Authorization: `Bearer ${LoginData.token}`,
@@ -532,8 +541,7 @@ const ProductsScreen = () => {
                     const responseData = response.data;
                     getProducts();
                     setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
-                })
-                .catch((error) => {
+                }).catch((error) => {
                     console.error(error);
                     if (error.response) {
                         console.error("Erro no servidor:", error.response.data);
@@ -545,9 +553,13 @@ const ProductsScreen = () => {
                         console.error("Erro inesperado:", error.message);
                         setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                     }
+                }).finally(() => {
+                    setLoading(false);
                 });
         }
     }
+
+    if (loading) return <LoadingComponent open={loading} />
 
     return <BoxComponent sx={{
         display: "flex",

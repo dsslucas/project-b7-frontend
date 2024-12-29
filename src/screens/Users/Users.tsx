@@ -9,6 +9,7 @@ import { MRT_ColumnDef, MRT_Row, MRT_TableOptions } from "material-react-table";
 import { Box } from "@mui/material";
 import { CommonFunctions } from "../../common/common";
 import AlertComponent from "../../components/Alert/Alert";
+import LoadingComponent from "../../components/Loading/Loading";
 
 const UsersScreen = () => {
     const { LoginData } = useSelector((state: any) => state);
@@ -19,6 +20,7 @@ const UsersScreen = () => {
         text: "",
         severity: 'info'
     });
+    const [loading, setLoading] = useState<boolean>(true);
     const columns = useMemo<MRT_ColumnDef<UserInterface | any>[]>(
         () => [
             {
@@ -190,6 +192,7 @@ const UsersScreen = () => {
     }
 
     const getUsers = async () => {
+        setLoading(true);
         await api
             .get<ResponseInterface>("/user/list", {
                 headers: {
@@ -205,8 +208,7 @@ const UsersScreen = () => {
                 } else {
                     console.error("O tipo de dados recebido não é um array.");
                 }
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
@@ -218,10 +220,13 @@ const UsersScreen = () => {
                     console.error("Erro inesperado:", error.message);
                     setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
+            }).finally(() => {
+                setLoading(false);
             });
     };
 
     const handleCreateUser = async (data: UserInterface) => {
+        setLoading(true);
         await api.post("/user/signin", data, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
@@ -243,10 +248,13 @@ const UsersScreen = () => {
                     console.error("Erro inesperado:", error.message);
                     setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
+            }).finally(() => {
+                setLoading(false);
             });
     }
 
     const handleUpdateUser = async (data: UserInterface) => {
+        setLoading(true);
         await api.put(`/user/${data.id}`, data, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
@@ -255,8 +263,7 @@ const UsersScreen = () => {
             .then((response) => {
                 getUsers();
                 setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
@@ -268,11 +275,14 @@ const UsersScreen = () => {
                     console.error("Erro inesperado:", error.message);
                     setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
+            }).finally(() => {
+                setLoading(false);
             });
     }
 
     const handleDeleteUser = async (data: number) => {
         if (window.confirm('Are you sure you want to delete this user?')) {
+            setLoading(true);
             await api.delete(`/user/${data}`, {
                 headers: {
                     Authorization: `Bearer ${LoginData.token}`,
@@ -291,9 +301,13 @@ const UsersScreen = () => {
                     } else {
                         console.error("Erro inesperado:", error.message);
                     }
+                }).finally(() => {
+                    setLoading(false);
                 });
         }
     }
+
+    if (loading) return <LoadingComponent open={loading} />
 
     return <BoxComponent sx={{
         display: "flex",
