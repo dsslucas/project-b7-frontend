@@ -8,6 +8,7 @@ import api from "../../api/api";
 import { MRT_ColumnDef, MRT_Row, MRT_TableOptions } from "material-react-table";
 import { Box } from "@mui/material";
 import { CommonFunctions } from "../../common/common";
+import AlertComponent from "../../components/Alert/Alert";
 
 const UsersScreen = () => {
     const { LoginData } = useSelector((state: any) => state);
@@ -227,8 +228,8 @@ const UsersScreen = () => {
             }
         })
             .then((response) => {
-                getUsers();
                 setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
+                getUsers();
             })
             .catch((error) => {
                 console.error(error);
@@ -301,6 +302,16 @@ const UsersScreen = () => {
         width: "100%",
         gap: 2
     }} component="div">
+        <>
+            {alert.open && (
+                <AlertComponent
+                    open={alert.open}
+                    title={alert.title}
+                    text={alert.text}
+                    severity={alert.severity}
+                />
+            )}
+        </>
         <BoxComponent sx={{}} component="header">
             <TypographyComponent component="span" variant="body2">
                 Gestão de usuários do sistema
