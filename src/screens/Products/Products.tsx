@@ -3,7 +3,7 @@ import BoxComponent from "../../components/Box/Box";
 import TypographyComponent from "../../components/Typography/Typography";
 import TableComponent from "../../components/Table/Table";
 import api from "../../api/api";
-import { ProductCategoryInterface, ProductInterface, ProductResponse, ResponseInterface } from "../../Common/interfaces";
+import { AlertInterface, ProductCategoryInterface, ProductInterface, ProductResponse, ResponseInterface } from "../../Common/interfaces";
 import { useSelector } from "react-redux";
 import { MRT_ColumnDef } from "material-react-table";
 import { TextField } from "@mui/material";
@@ -11,12 +11,19 @@ import InputComponent from "../../components/Input/Input";
 
 import { IMaskInput } from "react-imask";
 import { CommonFunctions } from "../../common/common";
+import AlertComponent from "../../components/Alert/Alert";
 
 const ProductsScreen = () => {
     const { LoginData } = useSelector((state: any) => state);
     const [headers, setHeaders] = useState<String[]>([]);
     const [products, setProducts] = useState<ProductInterface[]>([]);
     const [productsCategory, setProductsCategory] = useState<ProductCategoryInterface[]>([]);
+    const [alert, setAlert] = useState<AlertInterface>({
+        open: false,
+        title: "",
+        text: "",
+        severity: 'info'
+    });
 
     function isProductResponse(data: unknown): data is ProductResponse {
         return (
@@ -57,10 +64,13 @@ const ProductsScreen = () => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
+                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                 } else {
                     console.error("Erro inesperado:", error.message);
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
             });
     };
@@ -85,10 +95,13 @@ const ProductsScreen = () => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
+                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                 } else {
                     console.error("Erro inesperado:", error.message);
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
             });
     }
@@ -163,9 +176,9 @@ const ProductsScreen = () => {
                                 row.original = {
                                     ...row.original,
                                     active: result
-                                }                                    
+                                }
                             },
-                        }                        
+                        }
                     }
                 },
                 {
@@ -186,7 +199,7 @@ const ProductsScreen = () => {
                             onChange: (event) => {
                                 row._valuesCache = {
                                     ...row._valuesCache,
-                                    category:{
+                                    category: {
                                         id: Number(event.target.value)
                                     }
                                 }
@@ -203,7 +216,7 @@ const ProductsScreen = () => {
                         return category ? category.name : 'Sem categoria';
                     },
                 }
-                
+
             ];
 
             if (headers.some((element: String) => element === "ICMS")) {
@@ -220,7 +233,7 @@ const ProductsScreen = () => {
 
                         const handleValueChange = (value: string) => {
                             const numericValue = CommonFunctions().transformStringToNumericValue(value);
-                            
+
                             setIcms(value);
 
                             if (creationMode) {
@@ -275,7 +288,7 @@ const ProductsScreen = () => {
 
                         const handleValueChange = (value: string) => {
                             const numericValue = CommonFunctions().transformStringToNumericValue(value);
-                            
+
                             setAmount(value);
 
                             if (creationMode) {
@@ -334,7 +347,7 @@ const ProductsScreen = () => {
 
                         const handleValueChange = (value: string) => {
                             const numericValue = CommonFunctions().transformStringToNumericValue(value);
-                            
+
                             setUnitValue(value);
 
                             if (creationMode) {
@@ -454,17 +467,20 @@ const ProductsScreen = () => {
             }
         })
             .then((response) => {
-                const responseData = response.data;
                 getProducts();
+                setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
             })
             .catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
+                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                 } else {
                     console.error("Erro inesperado:", error.message);
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
             });
     }
@@ -488,15 +504,19 @@ const ProductsScreen = () => {
             .then((response) => {
                 const responseData = response.data;
                 getProducts();
+                setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
             })
             .catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
+                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                 } else {
                     console.error("Erro inesperado:", error.message);
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
             });
     }
@@ -511,15 +531,19 @@ const ProductsScreen = () => {
                 .then((response) => {
                     const responseData = response.data;
                     getProducts();
+                    setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
                 })
                 .catch((error) => {
                     console.error(error);
                     if (error.response) {
                         console.error("Erro no servidor:", error.response.data);
+                        setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                     } else if (error.request) {
                         console.error("Erro de requisição. Tente novamente mais tarde.");
+                        setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                     } else {
                         console.error("Erro inesperado:", error.message);
+                        setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                     }
                 });
         }
@@ -532,6 +556,16 @@ const ProductsScreen = () => {
         width: "100%",
         gap: 2
     }} component="div">
+        <>
+            {alert.open && (
+                <AlertComponent
+                    open={alert.open}
+                    title={alert.title}
+                    text={alert.text}
+                    severity={alert.severity}
+                />
+            )}
+        </>
         <BoxComponent sx={{}} component="header">
             <TypographyComponent component="span" variant="body2">
                 Gestão de produtos

@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react"
 import BoxComponent from "../../components/Box/Box";
 import TypographyComponent from "../../components/Typography/Typography";
 import { useSelector } from "react-redux";
-import { ResponseInterface, UserInterface } from "../../Common/interfaces";
+import { AlertInterface, ResponseInterface, UserInterface } from "../../Common/interfaces";
 import InputComponent from "../../components/Input/Input";
 import ButtonComponent from "../../components/Button/Button";
 import api from "../../api/api";
+import { CommonFunctions } from "../../common/common";
+import AlertComponent from "../../components/Alert/Alert";
 
 const UserScreen = () => {
     const { LoginData } = useSelector((state: any) => state);
@@ -19,6 +21,12 @@ const UserScreen = () => {
         email: '',
         registerDate: '',
         active: false,
+    });
+    const [alert, setAlert] = useState<AlertInterface>({
+        open: false,
+        title: "",
+        text: "",
+        severity: 'info'
     });
 
     // Check if data is valid with interface
@@ -55,17 +63,20 @@ const UserScreen = () => {
             }
         })
             .then((response) => {
-                const responseData = response.data;
                 getUserInfo();
+                setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
             })
             .catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
+                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                 } else {
                     console.error("Erro inesperado:", error.message);
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
             });
     };
@@ -82,17 +93,20 @@ const UserScreen = () => {
                 if (isUserInterface(responseData.data)) {
                     setFormValues(responseData.data);
                 } else {
-                    console.error("Os dados retornados não correspondem ao tipo UserInterface.", responseData.data);
+                    console.error("Erro ao renderizar dados.", responseData.data);
                 }
             })
             .catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
+                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
                 } else {
                     console.error("Erro inesperado:", error.message);
+                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
             });
     };
@@ -108,6 +122,16 @@ const UserScreen = () => {
         width: "100%",
         gap: 2
     }} component="div">
+        <>
+            {alert.open && (
+                <AlertComponent
+                    open={alert.open}
+                    title={alert.title}
+                    text={alert.text}
+                    severity={alert.severity}
+                />
+            )}
+        </>
         <BoxComponent sx={{}} component="header">
             <TypographyComponent component="span" variant="body2">
                 Dados do usuário

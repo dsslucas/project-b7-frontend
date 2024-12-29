@@ -16,14 +16,24 @@ export function CommonFunctions() {
     };
   }
 
-  function transformStringToNumericValue(value: string){
+  function transformStringToNumericValue(value: string) {
     return parseFloat(value.replace(/\./g, '').replace(',', '.'));
+  }
+
+  function buildAlert(title: string, text: string, severity: 'error' | 'info' | 'success' | 'warning') {
+    return {
+      open: true,
+      title,
+      text,
+      severity
+    }
   }
 
   return {
     capitalizeFirstLetter,
     ReturnHeaderAuthentication,
-    transformStringToNumericValue
+    transformStringToNumericValue,
+    buildAlert
   };
 }
 
