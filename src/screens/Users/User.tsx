@@ -8,6 +8,7 @@ import ButtonComponent from "../../components/Button/Button";
 import api from "../../api/api";
 import { CommonFunctions } from "../../common/common";
 import AlertComponent from "../../components/Alert/Alert";
+import LoadingComponent from "../../components/Loading/Loading";
 
 const UserScreen = () => {
     const { LoginData } = useSelector((state: any) => state);
@@ -28,6 +29,7 @@ const UserScreen = () => {
         text: "",
         severity: 'info'
     });
+    const [loading, setLoading] = useState<boolean>(true);
 
     // Check if data is valid with interface
     const isUserInterface = (data: any): data is UserInterface => {
@@ -55,8 +57,7 @@ const UserScreen = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Submitted Data:', formValues);
-
+        setLoading(true);
         await api.put(`/user/${formValues.id}`, formValues, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
@@ -65,8 +66,7 @@ const UserScreen = () => {
             .then((response) => {
                 getUserInfo();
                 setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
@@ -78,11 +78,13 @@ const UserScreen = () => {
                     console.error("Erro inesperado:", error.message);
                     setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
+            }).finally(() => {
+                setLoading(false);
             });
     };
 
     const getUserInfo = async () => {
-        console.log(LoginData);
+        setLoading(true);
         await api.get<ResponseInterface>(`/user/${LoginData.id}`, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
@@ -95,8 +97,7 @@ const UserScreen = () => {
                 } else {
                     console.error("Erro ao renderizar dados.", responseData.data);
                 }
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
@@ -108,12 +109,16 @@ const UserScreen = () => {
                     console.error("Erro inesperado:", error.message);
                     setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
+            }).finally(() => {
+                setLoading(false);
             });
     };
 
     useEffect(() => {
         getUserInfo();
     }, []);
+
+    if (loading) return <LoadingComponent open={loading} />
 
     return <BoxComponent sx={{
         display: "flex",

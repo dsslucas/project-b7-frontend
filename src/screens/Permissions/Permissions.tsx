@@ -7,6 +7,7 @@ import { CommonFunctions } from "../../common/common";
 import { AlertInterface, ConfigInfoInterface, ResponseInterface } from "../../Common/interfaces";
 import SwitchComponent from "../../components/Switch/Switch"
 import AlertComponent from "../../components/Alert/Alert";
+import LoadingComponent from "../../components/Loading/Loading";
 
 const PermissionScreen = () => {
     const { LoginData } = useSelector((state: any) => state);
@@ -17,6 +18,7 @@ const PermissionScreen = () => {
         text: "",
         severity: 'info'
     });
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         getConfigInfo();
@@ -27,6 +29,7 @@ const PermissionScreen = () => {
     }
 
     const getConfigInfo = async () => {
+        setLoading(true);
         await api
             .get<ResponseInterface>("/config/tables/list", {
                 headers: {
@@ -41,9 +44,8 @@ const PermissionScreen = () => {
                 } else {
                     console.error("O tipo de dados recebido não é um array.");
                 }
-            })
-            .catch((error) => {
-                console.error(error);                
+            }).catch((error) => {
+                console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
                     setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
@@ -54,11 +56,14 @@ const PermissionScreen = () => {
                     console.error("Erro inesperado:", error.message);
                     setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
+            }).finally(() => {
+                setLoading(false);
             });
     };
 
     const handleChangeVisibilityColumn = async (e: React.ChangeEvent<HTMLInputElement>, id: number) => {
         const { checked } = e.target;
+        setLoading(true);
 
         await api.put<ResponseInterface>(`/config/tables/${id}`, {}, {
             headers: {
@@ -89,11 +94,15 @@ const PermissionScreen = () => {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
                     setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
+            }).finally(() => {
+                setLoading(false);
             });
     }
 
     useEffect(() => {
     }, [configData])
+
+    if (loading) return <LoadingComponent open={loading} />
 
     return <BoxComponent sx={{
         textAlign: "left",

@@ -8,6 +8,7 @@ import api from "../../api/api";
 import { MRT_ColumnDef } from "material-react-table";
 import { CommonFunctions } from "../../common/common";
 import AlertComponent from "../../components/Alert/Alert";
+import LoadingComponent from "../../components/Loading/Loading";
 
 const ProductsCategoryScreen = () => {
     const { LoginData } = useSelector((state: any) => state);
@@ -19,6 +20,7 @@ const ProductsCategoryScreen = () => {
         text: "",
         severity: 'info'
     });
+    const [loading, setLoading] = useState<boolean>(true);
 
     function isProductCategory(data: unknown): data is ProductCategoryInterface[] {
         return Array.isArray(data) && data.every(item => 'id' in item);
@@ -29,6 +31,7 @@ const ProductsCategoryScreen = () => {
     }
 
     const getProductsCategoryType = async () => {
+        setLoading(true);
         await api
             .get<ResponseInterface>("/product/category/type/list", {
                 headers: {
@@ -44,8 +47,7 @@ const ProductsCategoryScreen = () => {
                 } else {
                     console.error("O tipo de dados recebido não é um array.");
                 }
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
@@ -57,10 +59,13 @@ const ProductsCategoryScreen = () => {
                     console.error("Erro inesperado:", error.message);
                     setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
+            }).finally(() => {
+                setLoading(false);
             });
     }
 
     const getProductsCategory = async () => {
+        setLoading(true);
         await api
             .get<ResponseInterface>("/product/category/list/all", {
                 headers: {
@@ -76,8 +81,7 @@ const ProductsCategoryScreen = () => {
                 } else {
                     console.error("O tipo de dados recebido não é um array.");
                 }
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
@@ -89,6 +93,8 @@ const ProductsCategoryScreen = () => {
                     console.error("Erro inesperado:", error.message);
                     setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
+            }).finally(() => {
+                setLoading(false);
             });
     };
 
@@ -199,6 +205,7 @@ const ProductsCategoryScreen = () => {
     }, []);
 
     const handleCreateProductCategory = async (data: ProductCategoryInterface) => {
+        setLoading(true);
         await api.post("/product/category/create", {
             ...data,
             type: {
@@ -212,8 +219,7 @@ const ProductsCategoryScreen = () => {
             .then((response) => {
                 getProductsCategory();
                 setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
-            })
-            .catch((error) => {
+            }).catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
@@ -225,10 +231,13 @@ const ProductsCategoryScreen = () => {
                     console.error("Erro inesperado:", error.message);
                     setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
+            }).finally(() => {
+                setLoading(false);
             });
     }
 
     const handleUpdateProductCategory = async (data: ProductCategoryInterface) => {
+        setLoading(true);
         await api.put(`/product/category/${data.id}`, {
             ...data,
             type: {
@@ -255,11 +264,14 @@ const ProductsCategoryScreen = () => {
                     console.error("Erro inesperado:", error.message);
                     setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                 }
+            }).finally(() => {
+                setLoading(false);
             });
     }
 
     const handleDeleteProductCategory = async (data: number) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
+            setLoading(true);
             await api.delete(`/product/category/${data}`, {
                 headers: {
                     Authorization: `Bearer ${LoginData.token}`,
@@ -268,8 +280,7 @@ const ProductsCategoryScreen = () => {
                 .then((response) => {
                     getProductsCategory();
                     setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
-                })
-                .catch((error) => {
+                }).catch((error) => {
                     console.error(error);
                     if (error.response) {
                         console.error("Erro no servidor:", error.response.data);
@@ -281,9 +292,13 @@ const ProductsCategoryScreen = () => {
                         console.error("Erro inesperado:", error.message);
                         setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
                     }
+                }).finally(() => {
+                    setLoading(false);
                 });
         }
     }
+
+    if (loading) return <LoadingComponent open={loading} />
 
     return <BoxComponent sx={{
         display: "flex",
@@ -292,7 +307,7 @@ const ProductsCategoryScreen = () => {
         width: "100%",
         gap: 2
     }} component="div">
-         <>
+        <>
             {alert.open && (
                 <AlertComponent
                     open={alert.open}
