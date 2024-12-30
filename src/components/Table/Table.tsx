@@ -37,13 +37,8 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-//Mock Data
-//import { data, Employee, roles } from '../../screens/testes/data';
-
-
 import { mkConfig, generateCsv, download } from 'export-to-csv'; //or use your library of choice here
-import { UserInterface } from '../../Common/interfaces';
-import { CommonFunctions } from '../../common/common';
+import { ProductCategoryInterface, ProductInterface, UserInterface } from '../../Common/interfaces';
 
 const csvConfig = mkConfig({
     fieldSeparator: ',',
@@ -55,10 +50,6 @@ type DownloadType = 'XLSX' | 'CSV';
 type Category = 'All Data' | 'All Rows' | 'Page Rows' | 'Selected Rows';
 
 const TableComponent: React.FC<TableComponentInterface> = (props: TableComponentInterface) => {
-    const [validationErrors, setValidationErrors] = useState<
-        Record<string, string | undefined>
-    >({});
-
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
 
@@ -70,71 +61,107 @@ const TableComponent: React.FC<TableComponentInterface> = (props: TableComponent
         setAnchorEl(null);
     };
 
-    const handleDownload = (rows: MRT_Row<UserInterface | any>[] | null, type: DownloadType, category: Category) => {
+    const handleDownload = (rows: MRT_Row<UserInterface | ProductInterface | ProductCategoryInterface | any>[] | null, type: DownloadType, category: Category) => {
         handleMenuClose();
-
+    
         if (category === "All Data") handleExportData(type);
         else if (rows !== null) handleExportRows(rows, type);
     };
-
+    
     const downloadXlsx = (data: any[], fileName: string) => {
         const worksheet = XLSX.utils.json_to_sheet(data);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Relatório");
         XLSX.writeFile(workbook, `${fileName}.xlsx`);
     };
-
-    const handleExportRows = (rows: MRT_Row<UserInterface | any>[], downloadType: DownloadType) => {
+    
+    const handleExportRows = (rows: MRT_Row<UserInterface | ProductInterface | ProductCategoryInterface | any>[], downloadType: DownloadType) => {
+        const visibleColumns = table.getVisibleLeafColumns();
+        const visibleColumnIds = visibleColumns
+            .map((col) => col.id as keyof UserInterface | keyof ProductInterface | keyof ProductCategoryInterface | any)
+            .filter((columnId: string) => columnId !== "action" && columnId !== "mrt-row-actions" && columnId !== "mrt-row-select");
+    
+        const filteredData = rows.map((row: any) =>
+            visibleColumnIds.reduce((acc, columnId) => {
+                acc[columnId] = formatColumnValue(columnId, row.original[columnId]);
+                return acc;
+            }, {} as Partial<UserInterface | ProductInterface | ProductCategoryInterface | any>)
+        );
+    
         if (downloadType === "CSV") {
-            const visibleColumns = table.getVisibleLeafColumns();
-            const visibleColumnIds = visibleColumns
-                .map((col) => col.id as keyof UserInterface | any)
-                .filter((columnId: string) => columnId !== "action" && columnId !== "mrt-row-actions" && columnId !== "mrt-row-select");
-
-            const filteredData = rows.map((row: any) =>
-                visibleColumnIds.reduce((acc, columnId) => {
-                    acc[columnId] = row.original[columnId];
-                    return acc;
-                }, {} as Partial<UserInterface | any>)
-            );
-
             const csv = generateCsv(csvConfig)(filteredData);
             download(csvConfig)(csv);
         } else if (downloadType === "XLSX") {
-            const visibleColumns = table.getVisibleLeafColumns();
-            const visibleColumnIds = visibleColumns
-                .map((col) => col.id as keyof UserInterface | any)
-                .filter((columnId: string) => columnId !== "action" && columnId !== "mrt-row-actions" && columnId !== "mrt-row-select");
-
-            const filteredData = rows.map((row: any) =>
-                visibleColumnIds.reduce((acc, columnId) => {
-                    acc[columnId] = row.original[columnId];
-                    return acc;
-                }, {} as Partial<UserInterface | any>)
-            );
             downloadXlsx(filteredData, "Relatório_Selecionado");
         }
     };
-
+    
     const handleExportData = (downloadType: DownloadType) => {
-        if (downloadType === "CSV") {
-            const filteredData = props.data.map((row: any) => {
-                const { action, ...rest } = row;
+        const filteredData = props.data.map((row: UserInterface | ProductInterface | ProductCategoryInterface) => {
+            if (isProductInterface(row)) {
+                const { active, category, ...rest } = row;
+                return {
+                    ...rest,
+                    active: active ? "Ativo" : "Inativo",
+                    categoryName: category?.name ?? "",
+                    categoryActive: category?.active ? "Ativo" : "Inativo",
+                    categoryType: category?.type?.name ?? "",
+                };
+            } else if (isUserInterface(row)) {
+                const { password, ...rest } = row;
                 return rest;
-            });
-
+            } else if (isProductCategoryInterface(row)) {
+                const { active, type, ...rest } = row;
+                return {
+                    ...rest,
+                    active: active ? "Ativo" : "Inativo",
+                    typeName: type?.name ?? "",
+                };
+            }
+            return row;
+        });
+    
+        if (downloadType === "CSV") {
             const csv = generateCsv(csvConfig)(filteredData);
             download(csvConfig)(csv);
         } else if (downloadType === "XLSX") {
-            const filteredData = props.data.map((row: any) => {
-                const { action, ...rest } = row;
-                return rest;
-            });
-
             downloadXlsx(filteredData, "Relatório_Completo");
         }
     };
-
+    
+    const formatColumnValue = (columnId: string, value: any): any => {
+        if (value === null || value === undefined) return "";
+        if (typeof value === "object") {
+            if ("name" in value) return value.name;
+            if ("active" in value) return value.active ? "Ativo" : "Inativo";
+            return JSON.stringify(value);
+        }
+        switch (columnId) {
+            case "active":
+                return value ? "Ativo" : "Inativo";
+            case "registerDate":
+                return new Date(value).toLocaleDateString("pt-BR");
+            case "amount":
+            case "unitValue":
+            case "totalValue":
+                return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+            default:
+                return value;
+        }
+    };
+    
+    const isProductInterface = (row: any): row is ProductInterface => {
+        return "sku" in row && "icms" in row && "category" in row;
+    };
+    
+    const isUserInterface = (row: any): row is UserInterface => {
+        return "username" in row && "role" in row && "email" in row;
+    };
+    
+    const isProductCategoryInterface = (row: any): row is ProductCategoryInterface => {
+        return "id" in row && "type" in row && "active" in row;
+    };    
+    
     //CREATE action
     const handleCreateUser: MRT_TableOptions<UserInterface | any>['onCreatingRowSave'] = async ({
         values,
@@ -198,9 +225,9 @@ const TableComponent: React.FC<TableComponentInterface> = (props: TableComponent
         createDisplayMode: 'row',
         editDisplayMode: 'row',
         getRowId: (row) => row.id,
-        onCreatingRowCancel: () => setValidationErrors({}),
+        //onCreatingRowCancel: () => setValidationErrors({}),
         onCreatingRowSave: handleCreateUser,
-        onEditingRowCancel: () => setValidationErrors({}),
+        //onEditingRowCancel: () => setValidationErrors({}),
         onEditingRowSave: handleSaveUser,
         renderRowActions: ({ row, table }) => (
             <Box sx={{ display: 'flex', gap: '1rem' }}>
