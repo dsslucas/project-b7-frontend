@@ -5,8 +5,7 @@ import TableComponent from "../../components/Table/Table";
 import { useSelector } from "react-redux";
 import { AlertInterface, ResponseInterface, UserInterface } from "../../Common/interfaces";
 import api from "../../api/api";
-import { MRT_ColumnDef, MRT_Row, MRT_TableOptions } from "material-react-table";
-import { Box } from "@mui/material";
+import { MRT_ColumnDef } from "material-react-table";
 import { CommonFunctions } from "../../common/common";
 import AlertComponent from "../../components/Alert/Alert";
 import LoadingComponent from "../../components/Loading/Loading";
@@ -185,6 +184,7 @@ const UsersScreen = () => {
 
     useEffect(() => {
         getUsers();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     function isUsersArray(data: unknown): data is UserInterface[] {

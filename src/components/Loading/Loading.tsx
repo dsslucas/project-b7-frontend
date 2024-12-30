@@ -1,7 +1,7 @@
 import React from "react"
 import { LoadingInterface } from "../../Common/interfaces";
 import BoxComponent from "../Box/Box";
-import { CircularProgress, Slide, Typography } from "@mui/material";
+import { CircularProgress, Typography } from "@mui/material";
 import { colors } from "../../colors";
 
 const LoadingComponent: React.FC<LoadingInterface> = (props: LoadingInterface) => {

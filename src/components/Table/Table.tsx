@@ -16,7 +16,6 @@ import * as XLSX from "xlsx";
 import {
     MaterialReactTable,
     useMaterialReactTable,
-    type MRT_ColumnDef,
     type MRT_Row,
     MRT_TableOptions,
 } from 'material-react-table';

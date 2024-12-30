@@ -116,6 +116,7 @@ const UserScreen = () => {
 
     useEffect(() => {
         getUserInfo();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (loading) return <LoadingComponent open={loading} />

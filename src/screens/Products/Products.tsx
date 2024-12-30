@@ -6,10 +6,7 @@ import api from "../../api/api";
 import { AlertInterface, ProductCategoryInterface, ProductInterface, ProductResponse, ResponseInterface } from "../../Common/interfaces";
 import { useSelector } from "react-redux";
 import { MRT_ColumnDef } from "material-react-table";
-import { TextField } from "@mui/material";
 import InputComponent from "../../components/Input/Input";
-
-import { IMaskInput } from "react-imask";
 import { CommonFunctions } from "../../common/common";
 import AlertComponent from "../../components/Alert/Alert";
 import LoadingComponent from "../../components/Loading/Loading";
@@ -55,7 +52,7 @@ const ProductsScreen = () => {
                 const responseData = response.data;
 
                 if (isProductResponse(responseData.data)) {
-                    const { headers, data: products, isAdmin, isStockWorker } = responseData.data;
+                    const { headers, data: products} = responseData.data;
                     setHeaders(headers);
                     setProducts(products);
                 } else {
@@ -446,12 +443,14 @@ const ProductsScreen = () => {
 
             return commonData;
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [products],
     );
 
     useEffect(() => {
         getProducts();
         getProductsCategory();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleCreateProduct = async (data: ProductInterface) => {
@@ -509,7 +508,6 @@ const ProductsScreen = () => {
             }
         })
             .then((response) => {
-                const responseData = response.data;
                 getProducts();
                 setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
             }).catch((error) => {
@@ -538,7 +536,6 @@ const ProductsScreen = () => {
                 }
             })
                 .then((response) => {
-                    const responseData = response.data;
                     getProducts();
                     setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
                 }).catch((error) => {

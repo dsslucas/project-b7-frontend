@@ -3,7 +3,7 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Stack from '@mui/material/Stack';
 import { AlertInterface } from "../../Common/interfaces";
-import { Collapse, Slide } from "@mui/material";
+import { Slide } from "@mui/material";
 
 const AlertComponent: React.FC<AlertInterface> = (props: AlertInterface) => {
     const [visible, setVisible] = useState(props.open);

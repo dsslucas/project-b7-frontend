@@ -22,6 +22,7 @@ const PermissionScreen = () => {
 
     useEffect(() => {
         getConfigInfo();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     function isConfigInfoArray(data: unknown): data is ConfigInfoInterface[] {
@@ -98,9 +99,6 @@ const PermissionScreen = () => {
                 setLoading(false);
             });
     }
-
-    useEffect(() => {
-    }, [configData])
 
     if (loading) return <LoadingComponent open={loading} />
 

@@ -202,6 +202,7 @@ const ProductsCategoryScreen = () => {
     useEffect(() => {
         getProductsCategoryType();
         getProductsCategory();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleCreateProductCategory = async (data: ProductCategoryInterface) => {
