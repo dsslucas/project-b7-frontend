@@ -81,7 +81,6 @@ const PermissionScreen = () => {
                 });
 
                 setConfigData(dataUpdated);
-                console.log(response)
                 setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
             }).catch((error) => {
                 console.error(error)

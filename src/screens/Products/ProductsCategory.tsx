@@ -176,7 +176,6 @@ const ProductsCategoryScreen = () => {
                 }
             }),
             muiEditTextFieldProps: ({ cell, row }) => {
-                console.log(row.original)
                 return ({
                     select: true,
                     value: String(row.original.type.id || ''),
