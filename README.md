@@ -33,6 +33,12 @@ All pages are responsive for smartphones, tablets, laptops and desktops, respect
 - Xlsx and export-to-csv (for export to CSV and XLSX)
 - React IMask (mask for brazilian number standart)
 
+## Instructions
+- Download [Node.js](https://nodejs.org/en/download)
+- Clone this repository;
+- Access the cloned project in the terminal and type `npm i` for download the dependencies;
+- After, start using the command `npm start`.
+
 ## Pages
 All texts are available in Portuguese of Brazil.
 
