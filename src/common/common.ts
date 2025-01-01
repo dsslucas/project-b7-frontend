@@ -20,13 +20,29 @@ export function CommonFunctions() {
     return parseFloat(value.replace(/\./g, '').replace(',', '.'));
   }
 
-  function buildAlert(title: string, text: string, severity: 'error' | 'info' | 'success' | 'warning') {
-    return {
+  function buildAlert(
+    title: string,
+    text: string,
+    severity: 'error' | 'info' | 'success' | 'warning',
+    callback: (result: { open: boolean; title: string; text: string; severity: 'warning' }) => void
+  ) {
+    const alert = {
       open: true,
       title,
       text,
-      severity
-    }
+      severity,
+    };
+  
+    setTimeout(() => {
+      callback({
+        open: false,
+        title: "",
+        text: "",
+        severity: "warning",
+      });
+    }, 5000);
+  
+    return alert;
   }
 
   return {

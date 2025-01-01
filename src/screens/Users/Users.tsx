@@ -212,13 +212,34 @@ const UsersScreen = () => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
-                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        error.response.data.message,
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        "Erro de requisição. Tente novamente mais tarde.",
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else {
                     console.error("Erro inesperado:", error.message);
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        "Erro inesperado. Tente novamente mais tarde.",
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 }
             }).finally(() => {
                 setLoading(false);
@@ -233,20 +254,48 @@ const UsersScreen = () => {
             }
         })
             .then((response) => {
-                setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
+                setAlert(CommonFunctions().buildAlert(
+                    "Sucesso",
+                    response.data.message,
+                    "success",
+                    (updatedAlert) => {
+                        setAlert(updatedAlert)
+                    })
+                );
                 getUsers();
             })
             .catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
-                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        error.response.data.message,
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        "Erro de requisição. Tente novamente mais tarde.",
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else {
                     console.error("Erro inesperado:", error.message);
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        "Erro inesperado. Tente novamente mais tarde.",
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 }
             }).finally(() => {
                 setLoading(false);
@@ -262,18 +311,46 @@ const UsersScreen = () => {
         })
             .then((response) => {
                 getUsers();
-                setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
+                setAlert(CommonFunctions().buildAlert(
+                    "Sucesso",
+                    response.data.message,
+                    "success",
+                    (updatedAlert) => {
+                        setAlert(updatedAlert)
+                    })
+                );
             }).catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
-                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        error.response.data.message,
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        "Erro de requisição. Tente novamente mais tarde.",
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else {
                     console.error("Erro inesperado:", error.message);
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        "Erro inesperado. Tente novamente mais tarde.",
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 }
             }).finally(() => {
                 setLoading(false);
@@ -290,7 +367,14 @@ const UsersScreen = () => {
             })
                 .then((response) => {
                     getUsers();
-                    setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Sucesso",
+                        response.data.message,
+                        "success",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 })
                 .catch((error) => {
                     console.error(error);
