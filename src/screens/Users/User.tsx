@@ -119,8 +119,6 @@ const UserScreen = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if (loading) return <LoadingComponent open={loading} />
-
     return <BoxComponent sx={{
         display: "flex",
         flexDirection: "column",
@@ -128,16 +126,15 @@ const UserScreen = () => {
         width: "100%",
         gap: 2
     }} component="div">
-        <>
-            {alert.open && (
-                <AlertComponent
-                    open={alert.open}
-                    title={alert.title}
-                    text={alert.text}
-                    severity={alert.severity}
-                />
-            )}
-        </>
+        {loading && <LoadingComponent open={loading} />}
+        {alert.open && (
+            <AlertComponent
+                open={alert.open}
+                title={alert.title}
+                text={alert.text}
+                severity={alert.severity}
+            />
+        )}
         <BoxComponent sx={{}} component="header">
             <TypographyComponent component="span" variant="body2">
                 Dados do usuário

@@ -99,8 +99,6 @@ const PermissionScreen = () => {
             });
     }
 
-    if (loading) return <LoadingComponent open={loading} />
-
     return <BoxComponent sx={{
         textAlign: "left",
         width: {
@@ -109,16 +107,15 @@ const PermissionScreen = () => {
             md: "30%"
         }
     }} component="div">
-        <>
-            {alert.open && (
-                <AlertComponent
-                    open={alert.open}
-                    title={alert.title}
-                    text={alert.text}
-                    severity={alert.severity}
-                />
-            )}
-        </>
+        {loading && <LoadingComponent open={loading} />}
+        {alert.open && (
+            <AlertComponent
+                open={alert.open}
+                title={alert.title}
+                text={alert.text}
+                severity={alert.severity}
+            />
+        )}
         <BoxComponent sx={{}} component="header">
             <TypographyComponent component="span" variant="body2">
                 Exibição de colunas da tabela para usuários estoquistas

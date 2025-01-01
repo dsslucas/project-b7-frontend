@@ -52,7 +52,7 @@ const ProductsScreen = () => {
                 const responseData = response.data;
 
                 if (isProductResponse(responseData.data)) {
-                    const { headers, data: products} = responseData.data;
+                    const { headers, data: products } = responseData.data;
                     setHeaders(headers);
                     setProducts(products);
                 } else {
@@ -123,7 +123,7 @@ const ProductsScreen = () => {
                     header: 'SKU',
                     enableEditing: (row) => {
                         // Check if SKU is for editing or creating
-                        return String(row?.getValue('sku') ?? "") === "";
+                        return String(row?.getValue('id') ?? "") === "";
                     },
                     filterVariant: "autocomplete",
                     accessorFn: (row: any) => String(row.sku),
@@ -556,8 +556,6 @@ const ProductsScreen = () => {
         }
     }
 
-    if (loading) return <LoadingComponent open={loading} />
-
     return <BoxComponent sx={{
         display: "flex",
         flexDirection: "column",
@@ -565,16 +563,15 @@ const ProductsScreen = () => {
         width: "100%",
         gap: 2
     }} component="div">
-        <>
-            {alert.open && (
-                <AlertComponent
-                    open={alert.open}
-                    title={alert.title}
-                    text={alert.text}
-                    severity={alert.severity}
-                />
-            )}
-        </>
+        {loading && <LoadingComponent open={loading} />}
+        {alert.open && (
+            <AlertComponent
+                open={alert.open}
+                title={alert.title}
+                text={alert.text}
+                severity={alert.severity}
+            />
+        )}
         <BoxComponent sx={{}} component="header">
             <TypographyComponent component="span" variant="body2">
                 Gestão de produtos

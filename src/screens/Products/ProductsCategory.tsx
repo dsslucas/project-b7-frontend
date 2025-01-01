@@ -298,8 +298,6 @@ const ProductsCategoryScreen = () => {
         }
     }
 
-    if (loading) return <LoadingComponent open={loading} />
-
     return <BoxComponent sx={{
         display: "flex",
         flexDirection: "column",
@@ -307,16 +305,15 @@ const ProductsCategoryScreen = () => {
         width: "100%",
         gap: 2
     }} component="div">
-        <>
-            {alert.open && (
-                <AlertComponent
-                    open={alert.open}
-                    title={alert.title}
-                    text={alert.text}
-                    severity={alert.severity}
-                />
-            )}
-        </>
+        {loading && <LoadingComponent open={loading} />}
+        {alert.open && (
+            <AlertComponent
+                open={alert.open}
+                title={alert.title}
+                text={alert.text}
+                severity={alert.severity}
+            />
+        )}
         <BoxComponent sx={{}} component="header">
             <TypographyComponent component="span" variant="body2">
                 Gestão da categoria de produtos
