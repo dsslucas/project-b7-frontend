@@ -32,6 +32,7 @@ All pages are responsive for smartphones, tablets, laptops and desktops, respect
 - Axios (API requests)
 - Xlsx and export-to-csv (for export to CSV and XLSX)
 - React IMask (mask for brazilian number standart)
+- Redux-persist (keep the token on page reload)
 
 ## Instructions
 - Download [Node.js](https://nodejs.org/en/download)
