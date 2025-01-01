@@ -167,8 +167,8 @@ const TableComponent: React.FC<TableComponentInterface> = (props: TableComponent
         table,
         row
     }) => {
-        props.create(values);
-        table.setCreatingRow(null);        
+        props.create(values, table);
+        //table.setCreatingRow(null);        
     };
 
     //UPDATE action
@@ -177,8 +177,8 @@ const TableComponent: React.FC<TableComponentInterface> = (props: TableComponent
         table,
         row,
     }) => {
-        props.update(row.original)
-        table.setEditingRow(null);
+        props.update(row.original, table)
+        //table.setEditingRow(null);
     };    
 
     //DELETE action
