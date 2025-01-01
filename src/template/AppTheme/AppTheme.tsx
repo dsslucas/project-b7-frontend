@@ -127,11 +127,7 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
     };
 
     const logoutUser = async () => {
-        await api.post<ResponseInterface>("/auth/logout", {}, {
-            headers: { 
-                Authorization: `Bearer ${loginDataRedux.token}` 
-            }
-        })
+        await api.post<ResponseInterface>("/auth/logout", {},)
             .then((response) => {
                 const responseData = response.data;
                 dispatch(LoginData(responseData.data));
