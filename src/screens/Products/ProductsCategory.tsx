@@ -5,7 +5,7 @@ import TableComponent from "../../components/Table/Table";
 import { useSelector } from "react-redux";
 import { AlertInterface, ProductCategoryInterface, ProductCategoryTypeInterface, ResponseInterface } from "../../Common/interfaces";
 import api from "../../api/api";
-import { MRT_ColumnDef } from "material-react-table";
+import { MRT_ColumnDef, MRT_TableInstance } from "material-react-table";
 import { CommonFunctions } from "../../common/common";
 import AlertComponent from "../../components/Alert/Alert";
 import LoadingComponent from "../../components/Loading/Loading";
@@ -246,7 +246,7 @@ const ProductsCategoryScreen = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleCreateProductCategory = async (data: ProductCategoryInterface) => {
+    const handleCreateProductCategory = async (data: ProductCategoryInterface, table: MRT_TableInstance<ProductCategoryInterface>) => {
         setLoading(true);
         await api.post("/product/category/create", {
             ...data,
@@ -268,6 +268,7 @@ const ProductsCategoryScreen = () => {
                         setAlert(updatedAlert)
                     })
                 );
+                table.setCreatingRow(null);
             }).catch((error) => {
                 console.error(error);
                 if (error.response) {
@@ -306,7 +307,7 @@ const ProductsCategoryScreen = () => {
             });
     }
 
-    const handleUpdateProductCategory = async (data: ProductCategoryInterface) => {
+    const handleUpdateProductCategory = async (data: ProductCategoryInterface, table: MRT_TableInstance<ProductCategoryInterface>) => {
         setLoading(true);
         await api.put(`/product/category/${data.id}`, {
             ...data,
@@ -328,6 +329,7 @@ const ProductsCategoryScreen = () => {
                         setAlert(updatedAlert)
                     })
                 );
+                table.setEditingRow(null);
             })
             .catch((error) => {
                 console.error(error);

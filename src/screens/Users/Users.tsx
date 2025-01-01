@@ -5,7 +5,7 @@ import TableComponent from "../../components/Table/Table";
 import { useSelector } from "react-redux";
 import { AlertInterface, ResponseInterface, UserInterface } from "../../Common/interfaces";
 import api from "../../api/api";
-import { MRT_ColumnDef } from "material-react-table";
+import { MRT_ColumnDef, MRT_TableInstance } from "material-react-table";
 import { CommonFunctions } from "../../common/common";
 import AlertComponent from "../../components/Alert/Alert";
 import LoadingComponent from "../../components/Loading/Loading";
@@ -246,7 +246,7 @@ const UsersScreen = () => {
             });
     };
 
-    const handleCreateUser = async (data: UserInterface) => {
+    const handleCreateUser = async (data: UserInterface, table: MRT_TableInstance<UserInterface>) => {
         setLoading(true);
         await api.post("/user/signin", data, {
             headers: {
@@ -254,6 +254,7 @@ const UsersScreen = () => {
             }
         })
             .then((response) => {
+                getUsers();
                 setAlert(CommonFunctions().buildAlert(
                     "Sucesso",
                     response.data.message,
@@ -262,7 +263,7 @@ const UsersScreen = () => {
                         setAlert(updatedAlert)
                     })
                 );
-                getUsers();
+                table.setCreatingRow(null);
             })
             .catch((error) => {
                 console.error(error);
@@ -302,7 +303,7 @@ const UsersScreen = () => {
             });
     }
 
-    const handleUpdateUser = async (data: UserInterface) => {
+    const handleUpdateUser = async (data: UserInterface, table: MRT_TableInstance<UserInterface>) => {
         setLoading(true);
         await api.put(`/user/${data.id}`, data, {
             headers: {
@@ -319,6 +320,7 @@ const UsersScreen = () => {
                         setAlert(updatedAlert)
                     })
                 );
+                table.setEditingRow(null);
             }).catch((error) => {
                 console.error(error);
                 if (error.response) {

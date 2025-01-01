@@ -5,7 +5,7 @@ import TableComponent from "../../components/Table/Table";
 import api from "../../api/api";
 import { AlertInterface, ProductCategoryInterface, ProductInterface, ProductResponse, ResponseInterface } from "../../Common/interfaces";
 import { useSelector } from "react-redux";
-import { MRT_ColumnDef } from "material-react-table";
+import { MRT_ColumnDef, MRT_TableInstance } from "material-react-table";
 import InputComponent from "../../components/Input/Input";
 import { CommonFunctions } from "../../common/common";
 import AlertComponent from "../../components/Alert/Alert";
@@ -495,7 +495,7 @@ const ProductsScreen = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleCreateProduct = async (data: ProductInterface) => {
+    const handleCreateProduct = async (data: ProductInterface, table: MRT_TableInstance<ProductInterface>) => {
         setLoading(true);
         await api.post("/product/create", {
             name: data.nameProduct,
@@ -522,6 +522,7 @@ const ProductsScreen = () => {
                         setAlert(updatedAlert)
                     })
                 );
+                table.setCreatingRow(null);
             }).catch((error) => {
                 console.error(error);
                 if (error.response) {
@@ -560,7 +561,7 @@ const ProductsScreen = () => {
             });
     }
 
-    const handleUpdateProduct = async (data: ProductInterface) => {
+    const handleUpdateProduct = async (data: ProductInterface, table: MRT_TableInstance<ProductInterface>) => {
         setLoading(true);
         await api.put(`/product/${data.id}`, {
             name: data.nameProduct,
@@ -587,6 +588,7 @@ const ProductsScreen = () => {
                         setAlert(updatedAlert)
                     })
                 );
+                table.setEditingRow(null);
             }).catch((error) => {
                 console.error(error);
                 if (error.response) {
@@ -599,16 +601,6 @@ const ProductsScreen = () => {
                             setAlert(updatedAlert)
                         })
                     );
-                    const timer = setTimeout(() => {
-                        setAlert({
-                            open: false,
-                            title: "",
-                            text: "",
-                            severity: "warning"
-                        });
-                    }, 5000);
-
-                    return () => clearTimeout(timer);
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
                     setAlert(CommonFunctions().buildAlert(
