@@ -5,7 +5,7 @@ import TableComponent from "../../components/Table/Table";
 import api from "../../api/api";
 import { AlertInterface, ProductCategoryInterface, ProductInterface, ProductResponse, ResponseInterface } from "../../Common/interfaces";
 import { useSelector } from "react-redux";
-import { MRT_ColumnDef } from "material-react-table";
+import { MRT_ColumnDef, MRT_TableInstance } from "material-react-table";
 import InputComponent from "../../components/Input/Input";
 import { CommonFunctions } from "../../common/common";
 import AlertComponent from "../../components/Alert/Alert";
@@ -52,7 +52,7 @@ const ProductsScreen = () => {
                 const responseData = response.data;
 
                 if (isProductResponse(responseData.data)) {
-                    const { headers, data: products} = responseData.data;
+                    const { headers, data: products } = responseData.data;
                     setHeaders(headers);
                     setProducts(products);
                 } else {
@@ -62,13 +62,34 @@ const ProductsScreen = () => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
-                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        error.response.data.message,
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        "Erro de requisição. Tente novamente mais tarde.",
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else {
                     console.error("Erro inesperado:", error.message);
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        "Erro inesperado. Tente novamente mais tarde.",
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 }
             }).finally(() => {
                 setLoading(false);
@@ -94,13 +115,34 @@ const ProductsScreen = () => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
-                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        error.response.data.message,
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        "Erro de requisição. Tente novamente mais tarde.",
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else {
                     console.error("Erro inesperado:", error.message);
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        "Erro inesperado. Tente novamente mais tarde.",
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 }
             }).finally(() => {
                 setLoading(false);
@@ -123,7 +165,7 @@ const ProductsScreen = () => {
                     header: 'SKU',
                     enableEditing: (row) => {
                         // Check if SKU is for editing or creating
-                        return String(row?.getValue('sku') ?? "") === "";
+                        return String(row?.getValue('id') ?? "") === "";
                     },
                     filterVariant: "autocomplete",
                     accessorFn: (row: any) => String(row.sku),
@@ -453,7 +495,7 @@ const ProductsScreen = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const handleCreateProduct = async (data: ProductInterface) => {
+    const handleCreateProduct = async (data: ProductInterface, table: MRT_TableInstance<ProductInterface>) => {
         setLoading(true);
         await api.post("/product/create", {
             name: data.nameProduct,
@@ -472,25 +514,54 @@ const ProductsScreen = () => {
         })
             .then((response) => {
                 getProducts();
-                setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
+                setAlert(CommonFunctions().buildAlert(
+                    "Sucesso",
+                    response.data.message,
+                    "success",
+                    (updatedAlert) => {
+                        setAlert(updatedAlert)
+                    })
+                );
+                table.setCreatingRow(null);
             }).catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
-                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        error.response.data.message,
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        "Erro de requisição. Tente novamente mais tarde.",
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else {
                     console.error("Erro inesperado:", error.message);
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        "Erro inesperado. Tente novamente mais tarde.",
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 }
             }).finally(() => {
                 setLoading(false);
             });
     }
 
-    const handleUpdateProduct = async (data: ProductInterface) => {
+    const handleUpdateProduct = async (data: ProductInterface, table: MRT_TableInstance<ProductInterface>) => {
         setLoading(true);
         await api.put(`/product/${data.id}`, {
             name: data.nameProduct,
@@ -509,18 +580,47 @@ const ProductsScreen = () => {
         })
             .then((response) => {
                 getProducts();
-                setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
+                setAlert(CommonFunctions().buildAlert(
+                    "Sucesso",
+                    response.data.message,
+                    "success",
+                    (updatedAlert) => {
+                        setAlert(updatedAlert)
+                    })
+                );
+                table.setEditingRow(null);
             }).catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
-                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        error.response.data.message,
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro", 
+                        "Erro de requisição. Tente novamente mais tarde.", 
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else {
                     console.error("Erro inesperado:", error.message);
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro", 
+                        "Erro inesperado. Tente novamente mais tarde.", 
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 }
             }).finally(() => {
                 setLoading(false);
@@ -537,26 +637,52 @@ const ProductsScreen = () => {
             })
                 .then((response) => {
                     getProducts();
-                    setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Sucesso", 
+                        response.data.message, 
+                        "success",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 }).catch((error) => {
                     console.error(error);
                     if (error.response) {
                         console.error("Erro no servidor:", error.response.data);
-                        setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
+                        setAlert(CommonFunctions().buildAlert(
+                            "Erro", 
+                            error.response.data.message, 
+                            "error",
+                            (updatedAlert) => {
+                                setAlert(updatedAlert)
+                            })
+                        );
                     } else if (error.request) {
                         console.error("Erro de requisição. Tente novamente mais tarde.");
-                        setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
+                        setAlert(CommonFunctions().buildAlert(
+                            "Erro", 
+                            "Erro de requisição. Tente novamente mais tarde.", 
+                            "error",
+                            (updatedAlert) => {
+                                setAlert(updatedAlert)
+                            })
+                        );
                     } else {
                         console.error("Erro inesperado:", error.message);
-                        setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
+                        setAlert(CommonFunctions().buildAlert(
+                            "Erro", 
+                            "Erro inesperado. Tente novamente mais tarde.", 
+                            "error",
+                            (updatedAlert) => {
+                                setAlert(updatedAlert)
+                            })
+                        );
                     }
                 }).finally(() => {
                     setLoading(false);
                 });
         }
     }
-
-    if (loading) return <LoadingComponent open={loading} />
 
     return <BoxComponent sx={{
         display: "flex",
@@ -565,16 +691,15 @@ const ProductsScreen = () => {
         width: "100%",
         gap: 2
     }} component="div">
-        <>
-            {alert.open && (
-                <AlertComponent
-                    open={alert.open}
-                    title={alert.title}
-                    text={alert.text}
-                    severity={alert.severity}
-                />
-            )}
-        </>
+        {loading && <LoadingComponent open={loading} />}
+        {alert.open && (
+            <AlertComponent
+                open={alert.open}
+                title={alert.title}
+                text={alert.text}
+                severity={alert.severity}
+            />
+        )}
         <BoxComponent sx={{}} component="header">
             <TypographyComponent component="span" variant="body2">
                 Gestão de produtos

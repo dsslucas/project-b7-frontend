@@ -65,18 +65,46 @@ const UserScreen = () => {
         })
             .then((response) => {
                 getUserInfo();
-                setAlert(CommonFunctions().buildAlert("Sucesso", response.data.message, "success"));
+                setAlert(CommonFunctions().buildAlert(
+                    "Sucesso",
+                    response.data.message,
+                    "success",
+                    (updatedAlert) => {
+                        setAlert(updatedAlert)
+                    })
+                );
             }).catch((error) => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
-                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        error.response.data.message,
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        "Erro de requisição. Tente novamente mais tarde.",
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else {
                     console.error("Erro inesperado:", error.message);
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        "Erro inesperado. Tente novamente mais tarde.",
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 }
             }).finally(() => {
                 setLoading(false);
@@ -101,13 +129,34 @@ const UserScreen = () => {
                 console.error(error);
                 if (error.response) {
                     console.error("Erro no servidor:", error.response.data);
-                    setAlert(CommonFunctions().buildAlert("Erro", error.response.data.message, "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        error.response.data.message,
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro de requisição. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        "Erro de requisição. Tente novamente mais tarde.",
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 } else {
                     console.error("Erro inesperado:", error.message);
-                    setAlert(CommonFunctions().buildAlert("Erro", "Erro inesperado. Tente novamente mais tarde.", "error"));
+                    setAlert(CommonFunctions().buildAlert(
+                        "Erro",
+                        "Erro inesperado. Tente novamente mais tarde.",
+                        "error",
+                        (updatedAlert) => {
+                            setAlert(updatedAlert)
+                        })
+                    );
                 }
             }).finally(() => {
                 setLoading(false);
@@ -119,8 +168,6 @@ const UserScreen = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    if (loading) return <LoadingComponent open={loading} />
-
     return <BoxComponent sx={{
         display: "flex",
         flexDirection: "column",
@@ -128,16 +175,15 @@ const UserScreen = () => {
         width: "100%",
         gap: 2
     }} component="div">
-        <>
-            {alert.open && (
-                <AlertComponent
-                    open={alert.open}
-                    title={alert.title}
-                    text={alert.text}
-                    severity={alert.severity}
-                />
-            )}
-        </>
+        {loading && <LoadingComponent open={loading} />}
+        {alert.open && (
+            <AlertComponent
+                open={alert.open}
+                title={alert.title}
+                text={alert.text}
+                severity={alert.severity}
+            />
+        )}
         <BoxComponent sx={{}} component="header">
             <TypographyComponent component="span" variant="body2">
                 Dados do usuário

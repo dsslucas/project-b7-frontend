@@ -1,3 +1,5 @@
+import { MRT_RowData } from "material-react-table";
+
 export interface ResponseInterface {
     message: string;
     status: boolean;
@@ -19,7 +21,7 @@ export interface ConfigInfoInterface {
     type: string;
 }
 
-export interface UserInterface {
+export interface UserInterface extends MRT_RowData {
     id: number;
     name: string;
     username: string;
@@ -38,7 +40,7 @@ export interface ProductResponse {
     isStockWorker: boolean;
 }
 
-export interface ProductInterface {
+export interface ProductInterface extends MRT_RowData {
     id: number;
     name: string; // send for payload
     nameProduct: string;
@@ -53,7 +55,7 @@ export interface ProductInterface {
     category: ProductCategoryInterface;
 }
 
-export interface ProductCategoryInterface {
+export interface ProductCategoryInterface extends MRT_RowData {
     id: number;
     name: string;
     active: boolean;
