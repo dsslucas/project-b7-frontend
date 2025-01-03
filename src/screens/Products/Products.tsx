@@ -496,17 +496,18 @@ const ProductsScreen = () => {
     }, []);
 
     const handleCreateProduct = async (data: ProductInterface, table: MRT_TableInstance<ProductInterface>) => {
+        console.log("data: ", data)
         setLoading(true);
         await api.post("/product/create", {
             name: data.nameProduct,
-            sku: Number(data.sku),
-            amount: Number(data.amount),
-            unitValue: Number(data.unitValue),
-            icms: Number(data.icms),
+            sku: typeof data.sku !== "number" ? null : Number(data.sku),
+            amount: typeof data.amount !== "number" ? null : Number(data.amount),
+            unitValue: typeof data.unitValue !== "number" ? null : Number(data.unitValue),
+            icms: typeof data.icms !== "number" ? null : Number(data.icms),
             category: {
                 id: data.category
             },
-            active: data.active
+            active: typeof data.active !== "boolean" ? null : data.active
         }, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
