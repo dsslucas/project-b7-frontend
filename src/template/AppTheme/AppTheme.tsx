@@ -21,8 +21,6 @@ import { colors } from "../../colors";
 import Button from "../../components/Button/Button"
 import ListItemButtomComponent from "../../components/List/ListItemButtom";
 import { useDispatch, useSelector } from "react-redux";
-import api from "../../api/api";
-import { ResponseInterface } from "../../Common/interfaces";
 import { LoginData } from "../../redux/actions/LoginData";
 import BoxComponent from "../../components/Box/Box"
 const menuLength = 240;
@@ -127,22 +125,13 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
     };
 
     const logoutUser = async () => {
-        await api.post<ResponseInterface>("/auth/logout", {},)
-            .then((response) => {
-                const responseData = response.data;
-                dispatch(LoginData(responseData.data));
-                window.location.reload();
-            })
-            .catch((error) => {
-                console.error(error)
-                if (error.response) {
-                    console.error(error)
-                } else if (error.request) {
-                    console.error("Erro de requisição. Tente novamente mais tarde.");
-                } else {
-                    console.error("Erro de requisição. Tente novamente mais tarde.");
-                }
-            });
+        dispatch(LoginData({
+            id: null,
+            name: null,
+            username: null,
+            role: null,
+            token: null
+        }));
     }
 
     function handleClickBreadcrumb(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, pathname: string) {
@@ -287,7 +276,6 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
                 </List>
             </Drawer>
 
-            {/* Conteúdo principal */}
             <SectionContainer>
                 <Header>
                     <Toolbar
