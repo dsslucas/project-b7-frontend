@@ -21,8 +21,6 @@ import { colors } from "../../colors";
 import Button from "../../components/Button/Button"
 import ListItemButtomComponent from "../../components/List/ListItemButtom";
 import { useDispatch, useSelector } from "react-redux";
-import api from "../../api/api";
-import { ResponseInterface } from "../../Common/interfaces";
 import { LoginData } from "../../redux/actions/LoginData";
 import BoxComponent from "../../components/Box/Box"
 const menuLength = 240;
@@ -134,7 +132,6 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
             role: null,
             token: null
         }));
-        // window.location.reload();
     }
 
     function handleClickBreadcrumb(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, pathname: string) {
@@ -279,7 +276,6 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
                 </List>
             </Drawer>
 
-            {/* Conteúdo principal */}
             <SectionContainer>
                 <Header>
                     <Toolbar
