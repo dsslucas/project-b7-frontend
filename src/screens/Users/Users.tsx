@@ -250,7 +250,8 @@ const UsersScreen = () => {
         setLoading(true);
         await api.post("/user/signin", {
             ...data,
-            active: typeof data.active !== "boolean" ? null : data.active
+            active: typeof data.active !== "boolean" ? null : data.active,
+            password: String("123456")
         }, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
