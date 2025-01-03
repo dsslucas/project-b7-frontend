@@ -127,22 +127,14 @@ const AppTheme: React.FC<AppThemeInterface> = (props: AppThemeInterface) => {
     };
 
     const logoutUser = async () => {
-        await api.post<ResponseInterface>("/auth/logout", {},)
-            .then((response) => {
-                const responseData = response.data;
-                dispatch(LoginData(responseData.data));
-                window.location.reload();
-            })
-            .catch((error) => {
-                console.error(error)
-                if (error.response) {
-                    console.error(error)
-                } else if (error.request) {
-                    console.error("Erro de requisição. Tente novamente mais tarde.");
-                } else {
-                    console.error("Erro de requisição. Tente novamente mais tarde.");
-                }
-            });
+        dispatch(LoginData({
+            id: null,
+            name: null,
+            username: null,
+            role: null,
+            token: null
+        }));
+        // window.location.reload();
     }
 
     function handleClickBreadcrumb(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, pathname: string) {
