@@ -568,10 +568,8 @@ const ProductsScreen = () => {
             amount: Number(data.amount),
             unitValue: Number(data.unitValue),
             icms: Number(data.icms),
-            category: {
-                id: data.category.id
-            },
-            active: data.active
+            categoryId: Number(data.category.id),
+            active: typeof data.active !== "boolean" ? null : data.active
         }, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
@@ -603,8 +601,8 @@ const ProductsScreen = () => {
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
                     setAlert(CommonFunctions().buildAlert(
-                        "Erro", 
-                        "Erro de requisição. Tente novamente mais tarde.", 
+                        "Erro",
+                        "Erro de requisição. Tente novamente mais tarde.",
                         "error",
                         (updatedAlert) => {
                             setAlert(updatedAlert)
@@ -613,8 +611,8 @@ const ProductsScreen = () => {
                 } else {
                     console.error("Erro inesperado:", error.message);
                     setAlert(CommonFunctions().buildAlert(
-                        "Erro", 
-                        "Erro inesperado. Tente novamente mais tarde.", 
+                        "Erro",
+                        "Erro inesperado. Tente novamente mais tarde.",
                         "error",
                         (updatedAlert) => {
                             setAlert(updatedAlert)
@@ -637,8 +635,8 @@ const ProductsScreen = () => {
                 .then((response) => {
                     getProducts();
                     setAlert(CommonFunctions().buildAlert(
-                        "Sucesso", 
-                        response.data.message, 
+                        "Sucesso",
+                        response.data.message,
                         "success",
                         (updatedAlert) => {
                             setAlert(updatedAlert)
@@ -649,8 +647,8 @@ const ProductsScreen = () => {
                     if (error.response) {
                         console.error("Erro no servidor:", error.response.data);
                         setAlert(CommonFunctions().buildAlert(
-                            "Erro", 
-                            error.response.data.message, 
+                            "Erro",
+                            error.response.data.message,
                             "error",
                             (updatedAlert) => {
                                 setAlert(updatedAlert)
@@ -659,8 +657,8 @@ const ProductsScreen = () => {
                     } else if (error.request) {
                         console.error("Erro de requisição. Tente novamente mais tarde.");
                         setAlert(CommonFunctions().buildAlert(
-                            "Erro", 
-                            "Erro de requisição. Tente novamente mais tarde.", 
+                            "Erro",
+                            "Erro de requisição. Tente novamente mais tarde.",
                             "error",
                             (updatedAlert) => {
                                 setAlert(updatedAlert)
@@ -669,8 +667,8 @@ const ProductsScreen = () => {
                     } else {
                         console.error("Erro inesperado:", error.message);
                         setAlert(CommonFunctions().buildAlert(
-                            "Erro", 
-                            "Erro inesperado. Tente novamente mais tarde.", 
+                            "Erro",
+                            "Erro inesperado. Tente novamente mais tarde.",
                             "error",
                             (updatedAlert) => {
                                 setAlert(updatedAlert)
@@ -699,6 +697,7 @@ const ProductsScreen = () => {
                 severity={alert.severity}
             />
         )}
+
         <BoxComponent sx={{}} component="header">
             <TypographyComponent component="span" variant="body2">
                 Gestão de produtos
