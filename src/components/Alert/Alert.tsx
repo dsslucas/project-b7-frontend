@@ -10,7 +10,7 @@ const AlertComponent: React.FC<AlertInterface> = (props: AlertInterface) => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            //setVisible(false);
+            setVisible(false);
         }, 5000);
 
         return () => clearTimeout(timer);
