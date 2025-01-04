@@ -500,13 +500,11 @@ const ProductsScreen = () => {
         setLoading(true);
         await api.post("/product/create", {
             name: data.nameProduct,
-            sku: typeof data.sku !== "number" ? null : Number(data.sku),
-            amount: typeof data.amount !== "number" ? null : Number(data.amount),
-            unitValue: typeof data.unitValue !== "number" ? null : Number(data.unitValue),
-            icms: typeof data.icms !== "number" ? null : Number(data.icms),
-            category: {
-                id: data.category
-            },
+            sku: Number(data.sku) === 0 ? null : Number(data.sku),
+            amount: Number(data.amount) === 0 ? null : Number(data.amount),
+            unitValue: Number(data.unitValue) === 0 ? null : Number(data.unitValue),
+            icms: Number(data.icms) === 0 ? null : Number(data.icms),
+            categoryId: Number(data.category),
             active: typeof data.active !== "boolean" ? null : data.active
         }, {
             headers: {
