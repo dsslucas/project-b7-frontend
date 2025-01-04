@@ -249,10 +249,9 @@ const ProductsCategoryScreen = () => {
     const handleCreateProductCategory = async (data: ProductCategoryInterface, table: MRT_TableInstance<ProductCategoryInterface>) => {
         setLoading(true);
         await api.post("/product/category/create", {
-            ...data,
-            type: {
-                id: data.type
-            }
+            name: data.name,
+            active: typeof data.active !== "boolean" ? null : data.active,
+            typeCategory: Number(data.type)            
         }, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
