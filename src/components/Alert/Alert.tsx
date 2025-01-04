@@ -10,7 +10,7 @@ const AlertComponent: React.FC<AlertInterface> = (props: AlertInterface) => {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            setVisible(false);
+            //setVisible(false);
         }, 5000);
 
         return () => clearTimeout(timer);
@@ -19,7 +19,7 @@ const AlertComponent: React.FC<AlertInterface> = (props: AlertInterface) => {
     return (
         <Stack
             sx={{
-                position: 'absolute',
+                position: 'fixed',
                 top: '10px',
                 left: '50%',
                 transform: 'translateX(-50%)',
