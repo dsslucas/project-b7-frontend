@@ -496,17 +496,16 @@ const ProductsScreen = () => {
     }, []);
 
     const handleCreateProduct = async (data: ProductInterface, table: MRT_TableInstance<ProductInterface>) => {
+        console.log("data: ", data)
         setLoading(true);
         await api.post("/product/create", {
             name: data.nameProduct,
-            sku: Number(data.sku),
-            amount: Number(data.amount),
-            unitValue: Number(data.unitValue),
-            icms: Number(data.icms),
-            category: {
-                id: data.category
-            },
-            active: data.active
+            sku: Number(data.sku) === 0 ? null : Number(data.sku),
+            amount: Number(data.amount) === 0 ? null : Number(data.amount),
+            unitValue: Number(data.unitValue) === 0 ? null : Number(data.unitValue),
+            icms: Number(data.icms) === 0 ? null : Number(data.icms),
+            categoryId: Number(data.category),
+            active: typeof data.active !== "boolean" ? null : data.active
         }, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
@@ -569,10 +568,8 @@ const ProductsScreen = () => {
             amount: Number(data.amount),
             unitValue: Number(data.unitValue),
             icms: Number(data.icms),
-            category: {
-                id: data.category.id
-            },
-            active: data.active
+            categoryId: Number(data.category.id),
+            active: typeof data.active !== "boolean" ? null : data.active
         }, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
@@ -604,8 +601,8 @@ const ProductsScreen = () => {
                 } else if (error.request) {
                     console.error("Erro de requisição. Tente novamente mais tarde.");
                     setAlert(CommonFunctions().buildAlert(
-                        "Erro", 
-                        "Erro de requisição. Tente novamente mais tarde.", 
+                        "Erro",
+                        "Erro de requisição. Tente novamente mais tarde.",
                         "error",
                         (updatedAlert) => {
                             setAlert(updatedAlert)
@@ -614,8 +611,8 @@ const ProductsScreen = () => {
                 } else {
                     console.error("Erro inesperado:", error.message);
                     setAlert(CommonFunctions().buildAlert(
-                        "Erro", 
-                        "Erro inesperado. Tente novamente mais tarde.", 
+                        "Erro",
+                        "Erro inesperado. Tente novamente mais tarde.",
                         "error",
                         (updatedAlert) => {
                             setAlert(updatedAlert)
@@ -638,8 +635,8 @@ const ProductsScreen = () => {
                 .then((response) => {
                     getProducts();
                     setAlert(CommonFunctions().buildAlert(
-                        "Sucesso", 
-                        response.data.message, 
+                        "Sucesso",
+                        response.data.message,
                         "success",
                         (updatedAlert) => {
                             setAlert(updatedAlert)
@@ -650,8 +647,8 @@ const ProductsScreen = () => {
                     if (error.response) {
                         console.error("Erro no servidor:", error.response.data);
                         setAlert(CommonFunctions().buildAlert(
-                            "Erro", 
-                            error.response.data.message, 
+                            "Erro",
+                            error.response.data.message,
                             "error",
                             (updatedAlert) => {
                                 setAlert(updatedAlert)
@@ -660,8 +657,8 @@ const ProductsScreen = () => {
                     } else if (error.request) {
                         console.error("Erro de requisição. Tente novamente mais tarde.");
                         setAlert(CommonFunctions().buildAlert(
-                            "Erro", 
-                            "Erro de requisição. Tente novamente mais tarde.", 
+                            "Erro",
+                            "Erro de requisição. Tente novamente mais tarde.",
                             "error",
                             (updatedAlert) => {
                                 setAlert(updatedAlert)
@@ -670,8 +667,8 @@ const ProductsScreen = () => {
                     } else {
                         console.error("Erro inesperado:", error.message);
                         setAlert(CommonFunctions().buildAlert(
-                            "Erro", 
-                            "Erro inesperado. Tente novamente mais tarde.", 
+                            "Erro",
+                            "Erro inesperado. Tente novamente mais tarde.",
                             "error",
                             (updatedAlert) => {
                                 setAlert(updatedAlert)
@@ -700,6 +697,7 @@ const ProductsScreen = () => {
                 severity={alert.severity}
             />
         )}
+
         <BoxComponent sx={{}} component="header">
             <TypographyComponent component="span" variant="body2">
                 Gestão de produtos

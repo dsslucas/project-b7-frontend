@@ -248,7 +248,11 @@ const UsersScreen = () => {
 
     const handleCreateUser = async (data: UserInterface, table: MRT_TableInstance<UserInterface>) => {
         setLoading(true);
-        await api.post("/user/signin", data, {
+        await api.post("/user/signin", {
+            ...data,
+            active: typeof data.active !== "boolean" ? null : data.active,
+            password: String("123456")
+        }, {
             headers: {
                 Authorization: `Bearer ${LoginData.token}`,
             }
