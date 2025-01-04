@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-    baseURL: `${process.env.REACT_APP_URL_CONNECTION_API}:${process.env.REACT_APP_PORT}/api`
+    baseURL: `${window.location.protocol}//${window.location.hostname}:3003/api`
   });
   
   export default api;
